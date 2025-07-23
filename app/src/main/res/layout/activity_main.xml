@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 사용자/전문업체 로그인 선택 메인 화면 -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="#FFFFFF">
+
+    <!-- 앱 제목 -->
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="48dp"
+        android:textColor="#000000" />
+
+    <!-- 사용자 버튼 -->
+    <Button
+        android:id="@+id/btnUserLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_user_login"
+        android:layout_marginBottom="24dp" />
+
+    <!-- 고수 버튼 -->
+    <Button
+        android:id="@+id/btnExpertLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_expert_login" />
+
+</LinearLayout>

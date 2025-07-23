@@ -1,0 +1,76 @@
+<!--
+    activity_user_home.xml
+    사용자 홈 화면 레이아웃 정의
+    - 상단: 앱 로고 및 사용자명
+    - 검색창
+    - 카테고리 RecyclerView (DB 연동)
+    - 하단: BottomNavigationView (홈, 고수찾기, 받은견적, 채팅, 예약)
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".view.user.UserHomeActivity">
+
+    <!-- 상단 앱 로고 + 사용자 이름 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/tvAppName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="숨고"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#512DA8"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사용자1"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- 검색창 -->
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="어떤 서비스가 필요하세요?"
+        android:background="@android:drawable/edit_text"
+        android:padding="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- 카테고리 목록 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCategory"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false" />
+
+    <!-- 하단 네비게이션 바 -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        app:menu="@menu/menu_bottom_nav"
+        app:labelVisibilityMode="labeled" />
+</LinearLayout>

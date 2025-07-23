@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- item_category.xml -->
+<!-- 카테고리 하나를 표시하는 레이아웃 (작은 텍스트 카드 형태) -->
+<!-- 카테고리 셀 레이아웃 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/ivCategoryIcon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@drawable/category_item_bg"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_placeholder"
+        android:contentDescription="카테고리 아이콘" />
+
+    <TextView
+        android:id="@+id/tvCategoryName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="카테고리"
+        android:textSize="12sp"
+        android:textColor="#000000"
+        android:gravity="center" />
+</LinearLayout>
+

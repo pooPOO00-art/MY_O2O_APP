@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    activity_user_login.xml
+    사용자 로그인 화면의 레이아웃을 정의하는 XML 파일
+    - 사용자 ID 입력
+    - 비밀번호 입력
+    - 로그인 버튼
+    - 회원가입으로 이동하는 버튼
+-->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.example.my_o2o_app.view.user.UserLoginActivity">
+
+    <!-- 앱 이름 또는 로그인 안내 -->
+    <TextView
+        android:id="@+id/tvLoginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_login_title"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp" />
+
+    <!-- 사용자 ID 입력 -->
+    <EditText
+        android:id="@+id/etUserId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_user_id"
+        android:inputType="text"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 비밀번호 입력 -->
+    <EditText
+        android:id="@+id/etUserPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_password"
+        android:inputType="textPassword"
+        android:layout_marginBottom="24dp" />
+
+    <!-- 로그인 버튼 -->
+    <Button
+        android:id="@+id/btnUserLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_login"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 회원가입 이동 -->
+    <TextView
+        android:id="@+id/tvGoToRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/go_to_register"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="14sp"
+        android:layout_gravity="center" />
+
+</LinearLayout>
