@@ -5,6 +5,7 @@ package com.example.my_o2o_app.view.user;
 
 import android.os.Bundle;
 import android.widget.TextView;
+import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -44,6 +45,13 @@ public class UserHomeActivity extends AppCompatActivity {
         // ✅ 어댑터 연결
         adapter = new CategoryAdapter();
         recyclerView.setAdapter(adapter);
+
+        // ✅ 카테고리 클릭 시 → 하위 카테고리 화면으로 이동
+        adapter.setOnCategoryClickListener(category -> {
+            Intent intent = new Intent(UserHomeActivity.this, CategoryDetailActivity.class);
+            intent.putExtra("category_id", category.getCategory_id());
+            startActivity(intent);
+        });
 
         // ✅ ViewModel 연결
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);

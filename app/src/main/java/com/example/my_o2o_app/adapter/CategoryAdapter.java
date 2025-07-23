@@ -22,6 +22,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     private List<Category> categoryList = new ArrayList<>();
 
+    public interface OnCategoryClickListener {
+        void onCategoryClick(Category category);
+    }
+
+    private OnCategoryClickListener clickListener;
+
+    public void setOnCategoryClickListener(OnCategoryClickListener listener) {
+        this.clickListener = listener;
+    }
+
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,7 +44,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category category = categoryList.get(position);
         holder.bind(category);
+
+        // 👇 클릭 이벤트 추가!
+        holder.itemView.setOnClickListener(v -> {
+            if (clickListener != null) {
+                clickListener.onCategoryClick(category);
+            }
+        });
     }
+
 
     @Override
     public int getItemCount() {

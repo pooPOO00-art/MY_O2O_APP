@@ -14,9 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MY_O2O_APP">
-        <activity
-            android:name=".item_category"
-            android:exported="false" />
+
         <!-- ✅ 사용자 홈 화면 -->
         <activity
             android:name=".view.user.UserHomeActivity"
@@ -27,6 +25,9 @@
         <activity
             android:name=".view.user.UserLoginActivity"
             android:exported="false" /> <!-- ✅ 앱 진입점 (런처) -->
+
+        <activity android:name=".view.user.CategoryDetailActivity" />
+
         <activity
             android:name=".view.MainActivity"
             android:exported="true">
