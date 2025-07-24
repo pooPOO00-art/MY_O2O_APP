@@ -1,6 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<!-- 전문가 카드 UI (item_expert.xml) -->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="1dp"
+    android:layout_marginEnd="1dp"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="8dp"
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    card_view:cardElevation="4dp"
+    android:background="@android:color/white">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- 고수 프로필 사진 -->
+        <ImageView
+            android:id="@+id/ivProfileImage"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_placeholder"
+            android:background="@drawable/rounded_corner"
+            android:layout_marginEnd="12dp" />
+
+        <!-- 우측 텍스트 정보 영역 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- 업체명 -->
+            <TextView
+                android:id="@+id/tvCompanyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="업체명"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <!-- 설명 -->
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="간단한 설명을 여기에 표시합니다."
+                android:textSize="13sp"
+                android:textColor="#666666"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

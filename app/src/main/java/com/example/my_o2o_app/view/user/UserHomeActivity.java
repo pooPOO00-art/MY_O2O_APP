@@ -1,30 +1,23 @@
 // UserHomeActivity.java
-// 사용자 홈 화면에서 상위 카테고리만 Grid로 출력하는 화면
+// 중앙 fragmentContainer에 Fragment를 교체하는 역할만 함
 
 package com.example.my_o2o_app.view.user;
 
 import android.os.Bundle;
 import android.widget.TextView;
-import android.content.Intent;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
 
 import com.example.my_o2o_app.R;
-import com.example.my_o2o_app.viewmodel.CategoryViewModel;
-import com.example.my_o2o_app.adapter.CategoryAdapter;
-import com.example.my_o2o_app.model.Category;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.my_o2o_app.view.user.fragment.FindExpertFragment;
+import com.example.my_o2o_app.view.user.fragment.HomeFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class UserHomeActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private CategoryAdapter adapter;
-    private CategoryViewModel categoryViewModel;
+    private TextView tvUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,42 +25,35 @@ public class UserHomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_home);
 
         // ✅ 사용자 이름 표시
+        tvUserName = findViewById(R.id.tvUserName);
         String userName = getIntent().getStringExtra("userName");
-        TextView tvUserName = findViewById(R.id.tvUserName);
         if (userName != null) {
             tvUserName.setText(userName + "님");
         }
 
-        // ✅ RecyclerView 설정 (GridLayout 4열)
-        recyclerView = findViewById(R.id.recyclerCategory);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 4)); // 4열 그리드
+        // ✅ 초기 화면: 홈
+        loadFragment(new HomeFragment());
 
-        // ✅ 어댑터 연결
-        adapter = new CategoryAdapter();
-        recyclerView.setAdapter(adapter);
-
-        // ✅ 카테고리 클릭 시 → 하위 카테고리 화면으로 이동
-        adapter.setOnCategoryClickListener(category -> {
-            Intent intent = new Intent(UserHomeActivity.this, CategoryDetailActivity.class);
-            intent.putExtra("category_id", category.getCategory_id());
-            startActivity(intent);
-        });
-
-        // ✅ ViewModel 연결
-        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
-
-        // ✅ LiveData 관찰: 상위 카테고리만 필터링해서 어댑터에 전달
-        categoryViewModel.getCategories().observe(this, categoryList -> {
-            List<Category> topLevel = new ArrayList<>();
-            for (Category c : categoryList) {
-                if (c.getParent_id() == null) {
-                    topLevel.add(c);
-                }
+        // ✅ 바텀 네비게이션 처리
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                loadFragment(new HomeFragment());
+                return true;
+            } else if (id == R.id.nav_search) {
+                loadFragment(new FindExpertFragment());
+                return true;
             }
-            adapter.setItems(topLevel);
+            // TODO: 추가 탭 처리
+            return false;
         });
+    }
 
-        // ✅ 카테고리 데이터 불러오기
-        categoryViewModel.loadCategories();
+    private void loadFragment(@NonNull Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit();
     }
 }

@@ -44,26 +44,26 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <!-- 검색창 -->
-    <EditText
-        android:id="@+id/etSearch"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:hint="어떤 서비스가 필요하세요?"
-        android:background="@android:drawable/edit_text"
-        android:padding="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp" />
 
-    <!-- 카테고리 목록 -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerCategory"
+
+<!--    &lt;!&ndash; 카테고리 목록 &ndash;&gt;-->
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/recyclerCategory"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:paddingTop="8dp"-->
+<!--        android:paddingBottom="8dp"-->
+<!--        android:clipToPadding="false" />-->
+
+    <!-- 중앙 콘텐츠 영역: Fragment가 들어갈 자리 -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:clipToPadding="false" />
+        android:layout_marginBottom="8dp" />
+
 
     <!-- 하단 네비게이션 바 -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
