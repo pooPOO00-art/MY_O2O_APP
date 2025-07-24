@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- dialog_region_select.xml -->
+<!-- 도/시군구 지역 선택용 BottomSheet 레이아웃 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/region_bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <!-- 도 목록 RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerRegion"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="400dp"
+        android:scrollbars="vertical" />
+
+    <!-- 시군구 목록 RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerDistrict"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="400dp"
+        android:layout_marginStart="16dp"
+        android:scrollbars="vertical" />
+</LinearLayout>

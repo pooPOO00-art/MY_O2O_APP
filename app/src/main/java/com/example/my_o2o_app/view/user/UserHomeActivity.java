@@ -5,13 +5,14 @@ package com.example.my_o2o_app.view.user;
 
 import android.os.Bundle;
 import android.widget.TextView;
+import com.example.my_o2o_app.view.user.fragment.FindExpertFragment;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+
 import com.example.my_o2o_app.R;
-import com.example.my_o2o_app.view.user.fragment.FindExpertFragment;
 import com.example.my_o2o_app.view.user.fragment.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
