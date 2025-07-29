@@ -21,14 +21,20 @@ import java.util.List;
 public class TopCategoryAdapter extends RecyclerView.Adapter<TopCategoryAdapter.TopCategoryViewHolder> {
 
     private List<Category> categoryList = new ArrayList<>();
-    private int selectedPosition = -1;
-    private final OnTopCategoryClickListener listener;
+    private int selectedPosition = -1; // 현재 선택된 항목
+    private OnTopCategoryClickListener listener; // 클릭 이벤트 리스너
 
-    // 클릭 이벤트를 전달받기 위한 인터페이스
+    // 🔹 상위 카테고리 클릭 시 전달할 인터페이스
     public interface OnTopCategoryClickListener {
         void onCategoryClick(Category category);
     }
 
+    // ✅ 기본 생성자 (XML 미리보기/경고 제거용)
+    public TopCategoryAdapter() {
+        this.listener = null;
+    }
+
+    // ✅ 기존 생성자 (람다/리스너를 받는 경우)
     public TopCategoryAdapter(OnTopCategoryClickListener listener) {
         this.listener = listener;
     }
@@ -47,13 +53,19 @@ public class TopCategoryAdapter extends RecyclerView.Adapter<TopCategoryAdapter.
         boolean isSelected = (position == selectedPosition);
         holder.bind(category, isSelected);
 
+        // 🔹 항목 클릭 시 동작
         holder.itemView.setOnClickListener(v -> {
             int prev = selectedPosition;
             selectedPosition = holder.getAdapterPosition();
-            notifyItemChanged(prev); // 이전 항목 un-highlight
-            notifyItemChanged(selectedPosition); // 새 항목 highlight
 
-            listener.onCategoryClick(category); // ViewModel에 알림
+            // 이전 항목과 새 항목 상태 갱신
+            notifyItemChanged(prev);
+            notifyItemChanged(selectedPosition);
+
+            // 리스너에 선택된 카테고리 전달
+            if (listener != null) {
+                listener.onCategoryClick(category);
+            }
         });
     }
 
@@ -62,11 +74,15 @@ public class TopCategoryAdapter extends RecyclerView.Adapter<TopCategoryAdapter.
         return categoryList.size();
     }
 
+    // 🔹 RecyclerView에 표시할 데이터 갱신
     public void setItems(List<Category> list) {
-        this.categoryList = list;
+        this.categoryList = list != null ? list : new ArrayList<>();
         notifyDataSetChanged();
     }
 
+    // =======================
+    // 🔹 ViewHolder 내부 클래스
+    // =======================
     public static class TopCategoryViewHolder extends RecyclerView.ViewHolder {
         private final ImageView imageView;
         private final TextView textView;
@@ -77,6 +93,7 @@ public class TopCategoryAdapter extends RecyclerView.Adapter<TopCategoryAdapter.
             textView = itemView.findViewById(R.id.tvTopCategoryName);
         }
 
+        // 🔹 데이터 바인딩
         public void bind(Category category, boolean isSelected) {
             textView.setText(category.getCategory_name());
 
@@ -84,7 +101,7 @@ public class TopCategoryAdapter extends RecyclerView.Adapter<TopCategoryAdapter.
             int iconResId = getIconResId(category.getCategory_name());
             imageView.setImageResource(iconResId);
 
-            // 선택 강조 처리
+            // 선택 상태 강조
             if (isSelected) {
                 imageView.setBackgroundResource(R.drawable.category_item_selected_bg);
                 textView.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -94,6 +111,7 @@ public class TopCategoryAdapter extends RecyclerView.Adapter<TopCategoryAdapter.
             }
         }
 
+        // 🔹 카테고리명에 따른 아이콘 매핑
         private int getIconResId(String categoryName) {
             switch (categoryName) {
                 case "이사":
