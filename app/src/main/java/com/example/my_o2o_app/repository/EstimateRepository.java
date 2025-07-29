@@ -26,6 +26,7 @@ public class EstimateRepository {
     // 질문 목록 LiveData
     private final MutableLiveData<List<Question>> questionsLiveData = new MutableLiveData<>();
 
+    /** 질문 LiveData 반환 */
     public LiveData<List<Question>> getQuestionsLiveData() {
         return questionsLiveData;
     }
@@ -53,6 +54,7 @@ public class EstimateRepository {
 
     /**
      * 견적 요청 제출
+     * @param body - userId, categoryId, districtId, optionIds 포함
      */
     public void submitEstimate(EstimateRequestBody body, Runnable onSuccess, Runnable onError) {
         apiService.submitEstimate(body).enqueue(new Callback<Void>() {

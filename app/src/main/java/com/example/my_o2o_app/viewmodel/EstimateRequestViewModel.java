@@ -21,30 +21,22 @@ public class EstimateRequestViewModel extends ViewModel {
     private final EstimateRepository repository = new EstimateRepository();
     private final List<Integer> selectedOptionIds = new ArrayList<>(); // 사용자가 선택한 모든 옵션 ID
 
-    /**
-     * 질문 목록 LiveData 반환
-     */
+    /** 질문 목록 LiveData 반환 */
     public LiveData<List<Question>> getQuestions() {
         return repository.getQuestionsLiveData();
     }
 
-    /**
-     * 서버에서 질문/옵션 목록 불러오기
-     */
+    /** 서버에서 질문/옵션 목록 불러오기 */
     public void loadQuestions(int categoryId) {
         repository.fetchQuestions(categoryId);
     }
 
-    /**
-     * 단일 옵션 선택 시 호출
-     */
+    /** 단일 옵션 선택 시 호출 */
     public void selectOption(int optionId) {
         selectedOptionIds.add(optionId);
     }
 
-    /**
-     * 다중 선택 시 호출
-     */
+    /** 다중 선택 시 호출 */
     public void selectOptions(List<Integer> optionIds) {
         selectedOptionIds.clear();
         if (optionIds != null) {
@@ -54,11 +46,15 @@ public class EstimateRequestViewModel extends ViewModel {
 
     /**
      * 최종 견적 요청 전송
+     * @param userId 사용자 ID
+     * @param categoryId 카테고리 ID
+     * @param districtId 선택한 시군구 ID (전국=83, 도전체=47~63)
      */
-    public void submitEstimate(int userId, int categoryId,
+    public void submitEstimate(int userId, int categoryId, Integer districtId,
                                Runnable onSuccess, Runnable onError) {
+
         EstimateRequestBody body =
-                new EstimateRequestBody(userId, categoryId, selectedOptionIds);
+                new EstimateRequestBody(userId, categoryId, districtId, selectedOptionIds);
 
         repository.submitEstimate(body, onSuccess, onError);
     }
