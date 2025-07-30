@@ -9,6 +9,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,6 +36,10 @@ public class EstimateDetailActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ExpertEstimateAdapter adapter;
     private ExpertEstimateViewModel viewModel;
+
+    private ProgressBar progressBar;
+    private TextView tvEstimateTitle;
+
     private int estimateId;
 
     @Override
@@ -37,15 +47,14 @@ public class EstimateDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estimate_detail);
 
-        // ✅ 1. 이전 화면에서 전달받은 estimateId 확인
-        estimateId = getIntent().getIntExtra("estimateId", -1);
-        Log.d(TAG, "받은 estimateId=" + estimateId);
-
-        // ✅ 2. RecyclerView 초기화
+        // 1️⃣ View 초기화
         recyclerView = findViewById(R.id.recyclerViewExpertEstimates);
+        progressBar = findViewById(R.id.progressBar); // xml에 추가됨
+        tvEstimateTitle = findViewById(R.id.tvEstimateTitle); // xml에 추가됨
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // ✅ 3. 어댑터 생성 (전문가 클릭 시 ExpertProfileActivity 이동)
+        // 2️⃣ 어댑터 설정
         adapter = new ExpertEstimateAdapter(new ArrayList<>(), expert -> {
             Log.d(TAG, "전문가 클릭: expertId=" + expert.getExpertId());
 
@@ -56,24 +65,34 @@ public class EstimateDetailActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adapter);
 
-        // ✅ 4. ViewModel 초기화
+        // 3️⃣ ViewModel 초기화
         viewModel = new ViewModelProvider(this).get(ExpertEstimateViewModel.class);
 
-        observeViewModel();
-
-        // ✅ 5. 견적 데이터 로드
+        // 4️⃣ estimateId 수신
+        estimateId = getIntent().getIntExtra("estimateId", -1);
         if (estimateId != -1) {
+            Log.d(TAG, "받은 estimateId=" + estimateId);
+            progressBar.setVisibility(View.VISIBLE);
             viewModel.loadExpertEstimates(estimateId);
         } else {
             Log.w(TAG, "estimateId가 유효하지 않습니다.");
         }
+
+        observeViewModel();
     }
 
     /** LiveData 관찰하여 UI 갱신 */
     private void observeViewModel() {
         viewModel.getExpertEstimates().observe(this, estimates -> {
-            Log.d(TAG, "전문가 견적 수신: " + (estimates != null ? estimates.size() : "null"));
-            adapter.updateData(estimates);
+            progressBar.setVisibility(View.GONE); // 로딩 완료 시 숨김
+            if (estimates == null || estimates.isEmpty()) {
+                Toast.makeText(this, "받은 견적이 없습니다.", Toast.LENGTH_SHORT).show();
+                adapter.updateData(new ArrayList<>());
+            } else {
+                Log.d(TAG, "전문가 견적 수신: " + estimates.size());
+                adapter.updateData(estimates);
+            }
         });
     }
 }
+

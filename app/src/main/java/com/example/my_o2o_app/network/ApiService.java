@@ -9,6 +9,8 @@ import com.example.my_o2o_app.model.Question;
 import com.example.my_o2o_app.model.EstimateRequestBody;
 import com.example.my_o2o_app.model.EstimateRequest;
 import com.example.my_o2o_app.model.ExpertEstimate;
+import com.example.my_o2o_app.model.ExpertEstimateResponse;
+
 
 import java.util.List;
 
@@ -97,7 +99,12 @@ public interface ApiService {
     @GET("/estimate/list")
     Call<List<EstimateRequest>> getUserEstimates(@Query("userId") int userId);
 
+    //@GET("/estimate/detail")
+    //Call<List<ExpertEstimate>> getExpertEstimates(@Query("estimateId") int estimateId);
+
+
     @GET("/estimate/detail")
-    Call<List<ExpertEstimate>> getExpertEstimates(@Query("estimateId") int estimateId);
+    Call<ExpertEstimateResponse> getExpertEstimates(@Query("estimateId") int estimateId);
+
 
 }
