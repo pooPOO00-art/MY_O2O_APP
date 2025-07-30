@@ -15,6 +15,9 @@ import androidx.fragment.app.Fragment;
 import com.example.my_o2o_app.R;
 import com.example.my_o2o_app.view.user.fragment.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.my_o2o_app.view.estimate.EstimateListFragment;
+import com.example.my_o2o_app.view.chat.ChatListFragment;
+import com.example.my_o2o_app.view.reservation.ReservationListFragment;
 
 public class UserHomeActivity extends AppCompatActivity {
 
@@ -39,16 +42,27 @@ public class UserHomeActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
+
             if (id == R.id.nav_home) {
                 loadFragment(new HomeFragment());
                 return true;
             } else if (id == R.id.nav_search) {
                 loadFragment(new FindExpertFragment());
                 return true;
+            } else if (id == R.id.nav_quotes) {  // ✅ 받은견적
+                loadFragment(new EstimateListFragment());
+                return true;
+            } else if (id == R.id.nav_chat) {    // ✅ 채팅
+                loadFragment(new ChatListFragment()); // 나중에 구현
+                return true;
+            } else if (id == R.id.nav_reservation) { // ✅ 예약
+                loadFragment(new ReservationListFragment()); // 나중에 구현
+                return true;
             }
-            // TODO: 추가 탭 처리
+
             return false;
         });
+
     }
 
     private void loadFragment(@NonNull Fragment fragment) {

@@ -7,6 +7,8 @@ import com.example.my_o2o_app.model.Region;
 import com.example.my_o2o_app.model.District;
 import com.example.my_o2o_app.model.Question;
 import com.example.my_o2o_app.model.EstimateRequestBody;
+import com.example.my_o2o_app.model.EstimateRequest;
+import com.example.my_o2o_app.model.ExpertEstimate;
 
 import java.util.List;
 
@@ -59,6 +61,9 @@ public interface ApiService {
             @Query("region_id") Integer regionId,
             @Query("keyword") String keyword
     );
+    // 전문가 프로필 조회
+    @GET("/expert/profile")
+    Call<JsonObject> getExpertProfile(@Query("expertId") int expertId);
 
     // ----------------------
     // 4️⃣ 지역(도/시군구) 관련
@@ -87,5 +92,12 @@ public interface ApiService {
     /** 견적 요청 전송 (선택 옵션 저장) */
     @POST("/estimate")
     Call<Void> submitEstimate(@Body EstimateRequestBody body);
+
+    // ✅ 받은 견적 목록 조회
+    @GET("/estimate/list")
+    Call<List<EstimateRequest>> getUserEstimates(@Query("userId") int userId);
+
+    @GET("/estimate/detail")
+    Call<List<ExpertEstimate>> getExpertEstimates(@Query("estimateId") int estimateId);
 
 }

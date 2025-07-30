@@ -26,11 +26,16 @@
             android:name=".view.user.UserLoginActivity"
             android:exported="false" /> <!-- ✅ 앱 진입점 (런처) -->
 
+
+
         <activity android:name=".view.user.CategoryDetailActivity" />
 
         <activity
             android:name=".view.estimate.EstimateRequestActivity"
             android:exported="false" />
+
+        <activity android:name=".view.estimate.EstimateDetailActivity" />
+        <activity android:name=".view.expert.ExpertProfileActivity" />
 
         <activity
             android:name=".view.MainActivity"
