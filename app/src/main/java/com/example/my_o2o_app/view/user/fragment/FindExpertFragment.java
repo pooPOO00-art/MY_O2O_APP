@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.my_o2o_app.R;
 import com.example.my_o2o_app.adapter.ExpertAdapter;
-import com.example.my_o2o_app.model.Category;
 import com.example.my_o2o_app.view.common.CategorySelectBottomSheetDialog;
 import com.example.my_o2o_app.view.common.RegionSelectBottomSheetDialog;
 import com.example.my_o2o_app.viewmodel.ExpertListViewModel;
@@ -33,7 +32,8 @@ public class FindExpertFragment extends Fragment {
     private Button btnLocationFilter;
 
     private Integer selectedCategoryId = null;
-    private Integer selectedDistrictId = null;
+    private Integer selectedDistrictId = -1;  // 전국 전체 기본값
+    private Integer selectedRegionId = 18;    // 전국 전체 regionId
 
     @Nullable
     @Override
@@ -43,6 +43,7 @@ public class FindExpertFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_find_expert, container, false);
 
+        // ✅ View 초기화
         etSearch = view.findViewById(R.id.etExpertSearch);
         rvExperts = view.findViewById(R.id.rvExperts);
         btnCategoryFilter = view.findViewById(R.id.btnCategoryFilter);
@@ -52,16 +53,16 @@ public class FindExpertFragment extends Fragment {
         expertAdapter = new ExpertAdapter();
         rvExperts.setAdapter(expertAdapter);
 
+        // ✅ ViewModel 초기화
         viewModel = new ViewModelProvider(this).get(ExpertListViewModel.class);
         viewModel.getExpertList().observe(getViewLifecycleOwner(), experts -> {
             Log.d("FindExpertFragment", "불러온 전문가 수: " + experts.size());
             expertAdapter.submitList(experts);
         });
 
-        // ✅ 초기 전체 로드
+        // ✅ 초기 전체 전문가 로드
         viewModel.loadExperts();
-        viewModel.loadDistrictList(); // ✅ 전체 district 목록 로딩 (regionName → districtId 변환을 위해 필수)
-
+        viewModel.loadDistrictList();
 
         // ✅ 카테고리 필터
         btnCategoryFilter.setOnClickListener(v -> {
@@ -81,12 +82,21 @@ public class FindExpertFragment extends Fragment {
             dialog.show(getChildFragmentManager(), "category_select");
         });
 
-        // ✅ 지역 필터
+        // ✅ 지역 필터 (공용 RegionSelectBottomSheetDialog)
         btnLocationFilter.setOnClickListener(v -> {
             RegionSelectBottomSheetDialog dialog = new RegionSelectBottomSheetDialog();
-            dialog.setOnRegionSelectedListener((regionName, districtName) -> {
-                selectedDistrictId = viewModel.getDistrictIdByName(districtName); // 🔍 districtName → districtId 변환 로직
-                btnLocationFilter.setText(districtName.equals("전체") ? "지역 전체" : districtName);
+            dialog.setOnRegionSelectedListener((regionId, districtId, regionName, districtName) -> {
+                selectedRegionId = regionId;
+                selectedDistrictId = districtId;
+
+                // 버튼 라벨
+                if ("전체".equals(regionName) && "전체".equals(districtName)) {
+                    btnLocationFilter.setText("지역 전체");
+                } else if ("전체".equals(districtName)) {
+                    btnLocationFilter.setText(regionName + " 전체");
+                } else {
+                    btnLocationFilter.setText(districtName);
+                }
 
                 applyExpertFilter();
             });
@@ -96,13 +106,15 @@ public class FindExpertFragment extends Fragment {
         return view;
     }
 
-    // ✅ 필터를 일괄 적용하는 메서드
+    /** 선택된 필터를 적용하여 전문가 목록 로드 */
     private void applyExpertFilter() {
         String keyword = etSearch.getText().toString().trim();
 
         Log.d("ExpertFilter", "필터 적용: categoryId=" + selectedCategoryId +
-                ", districtId=" + selectedDistrictId + ", keyword=" + keyword);
+                ", districtId=" + selectedDistrictId +
+                ", regionId=" + selectedRegionId +
+                ", keyword=" + keyword);
 
-        viewModel.loadExpertsByFilter(selectedCategoryId, selectedDistrictId, keyword);
+        viewModel.loadExpertsByFilter(selectedCategoryId, selectedDistrictId, selectedRegionId, keyword);
     }
 }

@@ -5,6 +5,8 @@ import com.example.my_o2o_app.model.Expert;
 import com.example.my_o2o_app.model.ExpertResponse;
 import com.example.my_o2o_app.model.Region;
 import com.example.my_o2o_app.model.District;
+import com.example.my_o2o_app.model.Question;
+import com.example.my_o2o_app.model.EstimateRequestBody;
 
 import java.util.List;
 
@@ -45,15 +47,16 @@ public interface ApiService {
     // 3️⃣ 전문가(고수) 관련
     // ----------------------
 
-    /** 승인된 전문가 전체 목록 */
+    /** 승인된 전문가 전체 목록 (필터링 없이) */
     @GET("/experts")
     Call<ExpertResponse> getApprovedExperts();
 
-    /** 조건별 전문가 검색 */
-    @GET("/experts")
-    Call<ExpertResponse> getExpertsByFilter(
+    /** 조건별 전문가 검색 (전국 전체 / 도 전체 / 시군구) */
+    @GET("/experts/filter")
+    Call<JsonObject> getExpertsByFilter(
             @Query("category_id") Integer categoryId,
             @Query("district_id") Integer districtId,
+            @Query("region_id") Integer regionId,
             @Query("keyword") String keyword
     );
 
@@ -74,20 +77,15 @@ public interface ApiService {
     Call<List<District>> getAllDistricts();
 
     // ----------------------
-    // 5️⃣ 견적 요청 관련 (추가 예정)
+    // 5️⃣ 견적 요청 관련
     // ----------------------
 
-    /**
-     * 세부 카테고리별 질문/옵션 조회
-     * 예: GET /questions?categoryId=16
-     */
+    /** 세부 카테고리별 질문/옵션 조회 */
     @GET("/questions")
-    Call<List<com.example.my_o2o_app.model.Question>> getQuestions(@Query("categoryId") int categoryId);
+    Call<List<Question>> getQuestions(@Query("categoryId") int categoryId);
 
-    /**
-     * 견적 요청 전송 (선택 옵션 저장)
-     */
+    /** 견적 요청 전송 (선택 옵션 저장) */
     @POST("/estimate")
-    Call<Void> submitEstimate(@Body com.example.my_o2o_app.model.EstimateRequestBody body);
+    Call<Void> submitEstimate(@Body EstimateRequestBody body);
 
 }

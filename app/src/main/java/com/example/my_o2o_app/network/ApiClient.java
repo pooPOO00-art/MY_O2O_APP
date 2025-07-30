@@ -6,7 +6,7 @@
 
     public class ApiClient {
         //private static final String BASE_URL = "http://10.0.2.2:5000/"; // 에뮬레이터용 주소
-        private static final String BASE_URL = "http://172.29.180.53:5000/";//학교 기기용 주소
+        private static final String BASE_URL = "http://172.29.187.136:5000/";//학교 기기용 주소
         //private static final String BASE_URL ="http://192.168.219.103:5000/";//집안용
 
 

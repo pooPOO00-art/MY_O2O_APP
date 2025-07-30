@@ -2,8 +2,6 @@ package com.example.my_o2o_app.view.estimate;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,20 +14,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.my_o2o_app.R;
-import com.example.my_o2o_app.adapter.DistrictAdapter;
 import com.example.my_o2o_app.adapter.OptionAdapter;
-import com.example.my_o2o_app.adapter.RegionAdapter;
-import com.example.my_o2o_app.model.District;
 import com.example.my_o2o_app.model.Question;
 import com.example.my_o2o_app.model.QuestionOption;
-import com.example.my_o2o_app.model.Region;
+import com.example.my_o2o_app.view.common.RegionSelectBottomSheetDialog;
 import com.example.my_o2o_app.viewmodel.EstimateRequestViewModel;
-import com.example.my_o2o_app.viewmodel.RegionFilterViewModel;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 견적 요청 화면
+ * - 질문/옵션 단일 선택
+ * - 공용 RegionSelectBottomSheetDialog로 지역 선택
+ * - 선택 완료 후 서버로 견적 요청 전송
+ */
 public class EstimateRequestActivity extends AppCompatActivity {
 
     private TextView tvCategoryName, tvQuestion, tvProgressPercent;
@@ -39,21 +38,15 @@ public class EstimateRequestActivity extends AppCompatActivity {
     private OptionAdapter optionAdapter;
 
     private EstimateRequestViewModel viewModel;
-    private RegionFilterViewModel regionViewModel;
 
     private List<Question> questionList = new ArrayList<>();
     private List<Integer> selectedPositionsPerQuestion = new ArrayList<>();
     private int currentIndex = 0;
 
     private int categoryId;
-    private int userId = 1; // TODO: 실제 로그인 연동
+    private int userId = 1; // TODO: 로그인 연동 시 수정
     private Integer selectedRegionId = null;
-    private Integer selectedDistrictId = null;
-
-    // BottomSheetDialog 관련
-    private BottomSheetDialog regionDialog;
-    private RegionAdapter regionAdapter;
-    private DistrictAdapter districtAdapter;
+    private Integer selectedDistrictId = null; // 서버 전송용
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +57,7 @@ public class EstimateRequestActivity extends AppCompatActivity {
         String categoryName = getIntent().getStringExtra("categoryName");
         Log.d("EstimateRequest", "categoryId=" + categoryId + ", name=" + categoryName);
 
-        // View 초기화
+        // ✅ View 초기화
         tvCategoryName = findViewById(R.id.tvCategoryName);
         tvQuestion = findViewById(R.id.tvQuestion);
         tvProgressPercent = findViewById(R.id.tvProgressPercent);
@@ -76,9 +69,10 @@ public class EstimateRequestActivity extends AppCompatActivity {
 
         tvCategoryName.setText(categoryName != null ? categoryName : "카테고리 없음");
 
+        // ✅ ViewModel 초기화
         viewModel = new ViewModelProvider(this).get(EstimateRequestViewModel.class);
-        regionViewModel = new ViewModelProvider(this).get(RegionFilterViewModel.class);
 
+        // ✅ 옵션 RecyclerView
         optionAdapter = new OptionAdapter(selectedIndex -> {
             if (currentIndex < selectedPositionsPerQuestion.size()) {
                 selectedPositionsPerQuestion.set(currentIndex, selectedIndex);
@@ -87,7 +81,7 @@ public class EstimateRequestActivity extends AppCompatActivity {
         rvOptions.setLayoutManager(new LinearLayoutManager(this));
         rvOptions.setAdapter(optionAdapter);
 
-        // 질문 LiveData
+        // ✅ 질문 LiveData
         viewModel.getQuestions().observe(this, questions -> {
             if (questions != null && !questions.isEmpty()) {
                 questionList = questions;
@@ -104,8 +98,18 @@ public class EstimateRequestActivity extends AppCompatActivity {
 
         viewModel.loadQuestions(categoryId);
 
-        btnSelectRegion.setOnClickListener(v -> showRegionDialog());
+        // ✅ 지역 선택 버튼 클릭 → 공용 BottomSheetDialog 사용
+        btnSelectRegion.setOnClickListener(v -> {
+            RegionSelectBottomSheetDialog dialog = new RegionSelectBottomSheetDialog();
+            dialog.setOnRegionSelectedListener((regionId, districtId, regionName, districtName) -> {
+                selectedRegionId = regionId;
+                selectedDistrictId = districtId; // 서버 전송용
+                btnSelectRegion.setText("선택 지역: " + regionName + " " + districtName);
+            });
+            dialog.show(getSupportFragmentManager(), "RegionSelect");
+        });
 
+        // ✅ 다음 버튼
         btnNext.setOnClickListener(v -> {
             int selectedOption = selectedPositionsPerQuestion.get(currentIndex);
             if (selectedOption == -1) {
@@ -117,6 +121,7 @@ public class EstimateRequestActivity extends AppCompatActivity {
                 currentIndex++;
                 showQuestion(currentIndex);
             } else {
+                // 마지막 질문 → 견적 요청
                 if (selectedDistrictId == null) {
                     Toast.makeText(this, "지역을 선택해주세요.", Toast.LENGTH_SHORT).show();
                     return;
@@ -138,6 +143,7 @@ public class EstimateRequestActivity extends AppCompatActivity {
             }
         });
 
+        // ✅ 이전 버튼
         btnPrev.setOnClickListener(v -> {
             if (currentIndex > 0) {
                 currentIndex--;
@@ -146,6 +152,7 @@ public class EstimateRequestActivity extends AppCompatActivity {
         });
     }
 
+    /** 질문/옵션 표시 및 진행률 갱신 */
     private void showQuestion(int index) {
         Question question = questionList.get(index);
         tvQuestion.setText(question.getContent());
@@ -169,6 +176,7 @@ public class EstimateRequestActivity extends AppCompatActivity {
         btnNext.setText(index == questionList.size() - 1 ? "견적 요청" : "다음");
     }
 
+    /** 전체 선택 옵션 ID 수집 */
     private List<Integer> collectSelectedOptionIds() {
         List<Integer> selectedIds = new ArrayList<>();
         for (int qIndex = 0; qIndex < questionList.size(); qIndex++) {
@@ -178,45 +186,5 @@ public class EstimateRequestActivity extends AppCompatActivity {
             }
         }
         return selectedIds;
-    }
-
-    private void showRegionDialog() {
-        if (regionDialog == null) {
-            View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_region_select, null);
-            RecyclerView recyclerRegion = dialogView.findViewById(R.id.recyclerRegion);
-            RecyclerView recyclerDistrict = dialogView.findViewById(R.id.recyclerDistrict);
-
-            recyclerRegion.setLayoutManager(new LinearLayoutManager(this));
-            recyclerDistrict.setLayoutManager(new LinearLayoutManager(this));
-
-            regionAdapter = new RegionAdapter(new ArrayList<>(), region -> {
-                selectedRegionId = region.getRegionId();
-                regionViewModel.loadDistricts(selectedRegionId);
-            });
-            recyclerRegion.setAdapter(regionAdapter);
-
-            districtAdapter = new DistrictAdapter(new ArrayList<>(), district -> {
-                selectedDistrictId = district.getDistrictId();
-                btnSelectRegion.setText("선택 지역: " + district.getDistrictName());
-                regionDialog.dismiss();
-            });
-            recyclerDistrict.setAdapter(districtAdapter);
-
-            regionDialog = new BottomSheetDialog(this);
-            regionDialog.setContentView(dialogView);
-
-            regionViewModel.getRegionList().observe(this, regions -> {
-                if (regions != null) regionAdapter.updateList(regions);
-            });
-            regionViewModel.getDistrictList().observe(this, districts -> {
-                if (districts != null) {
-                    // DB 기준으로 이미 전체 행 존재하므로 그대로 표시
-                    districtAdapter.updateList(districts);
-                }
-            });
-
-            regionViewModel.loadRegions();
-        }
-        regionDialog.show();
     }
 }
