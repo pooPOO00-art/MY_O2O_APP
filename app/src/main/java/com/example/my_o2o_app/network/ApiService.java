@@ -70,6 +70,18 @@ public interface ApiService {
     @GET("/expert/profile")
     Call<JsonObject> getExpertProfile(@Query("expertId") int expertId);
 
+    /** 승인된 전문가 전체 목록 (예약·리뷰 통계 포함) */
+    @GET("/experts/stats")
+    Call<JsonObject> getApprovedExpertsWithStats();
+
+    /** 조건별 전문가 검색 (예약·리뷰 통계 포함) */
+    @GET("/experts/stats/filter")
+    Call<JsonObject> getExpertsWithStatsByFilter(
+            @Query("category_id") Integer categoryId,
+            @Query("district_id") Integer districtId,
+            @Query("region_id") Integer regionId,
+            @Query("keyword") String keyword
+    );
     // ----------------------
     // 4️⃣ 지역(도/시군구) 관련
     // ----------------------

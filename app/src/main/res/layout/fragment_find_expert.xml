@@ -4,8 +4,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
     <!-- 검색창 -->
     <EditText
@@ -15,13 +14,14 @@
         android:hint="업체명을 검색해보세요"
         android:padding="12dp"
         android:background="@android:drawable/edit_text"
-        android:layout_marginBottom="12dp" />
+        android:layout_margin="12dp" />
 
-    <!-- 필터 버튼 영역 (카테고리 / 지역) -->
+    <!-- 필터 버튼 영역 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="12dp">
 
         <Button

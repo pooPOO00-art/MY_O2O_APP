@@ -1,5 +1,6 @@
 // ExpertAdapter.java
-// 전문가 리스트를 RecyclerView에 바인딩하는 어댑터
+// 전문가 리스트를 RecyclerView에 바인딩하는 어댑터 (업체카드 최종버전)
+// - 업체명, ⭐평점+경력+예약(한 줄), 업체 설명(2줄), 대표 서비스·지역(1줄), 프로필 이미지
 
 package com.example.my_o2o_app.adapter;
 
@@ -8,24 +9,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.my_o2o_app.R;
-import com.example.my_o2o_app.model.Expert;
+import com.example.my_o2o_app.model.ExpertWithStats;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExpertAdapter extends RecyclerView.Adapter<ExpertAdapter.ExpertViewHolder> {
 
-    private List<Expert> expertList = new ArrayList<>();
+    private List<ExpertWithStats> expertList = new ArrayList<>();
 
-    public void submitList(List<Expert> list) {
-        expertList = list;
+    /** 외부에서 리스트 갱신 */
+    public void submitList(List<ExpertWithStats> list) {
+        expertList = list != null ? list : new ArrayList<>();
         notifyDataSetChanged();
     }
 
@@ -39,25 +40,39 @@ public class ExpertAdapter extends RecyclerView.Adapter<ExpertAdapter.ExpertView
 
     @Override
     public void onBindViewHolder(@NonNull ExpertViewHolder holder, int position) {
-        Expert expert = expertList.get(position);
+        ExpertWithStats expert = expertList.get(position);
+
+        // 1️⃣ 업체명
         holder.tvCompanyName.setText(expert.getCompanyName());
-        Log.d("ExpertAdapter", "회사명: " + expert.getCompanyName());
 
-        // 설명은 최대 15자까지만 표시
-        String desc = expert.getDescription();
-        if (desc != null && desc.length() > 40) {
-            desc = desc.substring(0, 15) + "...";
-        }
-        holder.tvDescription.setText(desc != null ? desc : "소개 정보 없음");
+        // 2️⃣ ⭐평점 + 경력 + 예약 (한 줄)
+        String careerRatingText = "⭐ " + expert.getAvgRating()
+                + " (" + expert.getReviewCount() + ") · 경력 "
+                + expert.getCareerYears() + "년 · 예약 "
+                + expert.getReservationCount() + "회";
+        holder.tvRatingCareerReservation.setText(careerRatingText);
 
-        // 프로필 이미지
+        // 3️⃣ 업체 설명 (2줄 제한)
+        String description = (expert.getDescription() != null && !expert.getDescription().isEmpty())
+                ? expert.getDescription()
+                : "업체 설명 없음";
+        holder.tvDescription.setText(description);
+
+        // 4️⃣ 대표 서비스·지역 (1줄)
+        String serviceInfo = (expert.getServiceInfo() != null && !expert.getServiceInfo().isEmpty())
+                ? expert.getServiceInfo()
+                : "서비스/지역 정보 없음";
+        holder.tvServiceInfo.setText(serviceInfo);
+
+        // 5️⃣ 프로필 이미지
         if (expert.getProfileImage() != null && !expert.getProfileImage().isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(expert.getProfileImage())
                     .placeholder(R.drawable.ic_placeholder)
-                    .into(holder.ivProfileImage);
+                    .centerCrop()
+                    .into(holder.ivProfile);
         } else {
-            holder.ivProfileImage.setImageResource(R.drawable.ic_placeholder);
+            holder.ivProfile.setImageResource(R.drawable.ic_placeholder);
         }
     }
 
@@ -66,18 +81,18 @@ public class ExpertAdapter extends RecyclerView.Adapter<ExpertAdapter.ExpertView
         return expertList.size();
     }
 
+    /** ViewHolder: item_expert.xml의 모든 View 참조 */
     static class ExpertViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivProfileImage;
-        TextView tvCompanyName;
-        TextView tvDescription;
+        ImageView ivProfile;
+        TextView tvCompanyName, tvRatingCareerReservation, tvDescription, tvServiceInfo;
 
         public ExpertViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
+            ivProfile = itemView.findViewById(R.id.ivProfile);
             tvCompanyName = itemView.findViewById(R.id.tvCompanyName);
-            tvDescription = itemView.findViewById(R.id.tvDescription);
+            tvRatingCareerReservation = itemView.findViewById(R.id.tvRatingCareerReservation); // ⭐평점+경력+예약
+            tvDescription = itemView.findViewById(R.id.tvDescription);       // 업체 설명
+            tvServiceInfo = itemView.findViewById(R.id.tvServiceInfo);       // 대표 서비스/지역
         }
     }
-
-
 }
