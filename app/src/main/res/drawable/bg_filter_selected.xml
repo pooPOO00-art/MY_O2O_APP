@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 배경색: 앱 메인 컬러 -->
+    <solid android:color="@color/purple_500"/>
+
+    <!-- 둥근 모서리 -->
+    <corners android:radius="16dp"/>
+
+    <!-- 살짝 그림자 느낌 -->
+    <padding
+        android:top="4dp"
+        android:bottom="4dp"
+        android:left="8dp"
+        android:right="8dp"/>
+</shape>

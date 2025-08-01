@@ -7,15 +7,29 @@
     android:background="@drawable/rounded_corner"
     android:layout_margin="8dp">
 
-    <!-- 1️⃣ 서비스명 + 지역명 -->
-    <TextView
-        android:id="@+id/tvCategoryAndRegion"
+    <!-- 1️⃣ 서비스명 + 지역명 + 아이콘 -->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="홈 청소 | 서울 강남구"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="4dp"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp">
+
+        <ImageView
+            android:id="@+id/ivCategoryIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_placeholder"
+            android:layout_marginEnd="6dp"/>
+
+        <TextView
+            android:id="@+id/tvCategoryAndRegion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="홈 청소 | 서울 강남구"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
 
     <!-- 2️⃣ 남은 시간 + 받은 견적 수 -->
     <TextView

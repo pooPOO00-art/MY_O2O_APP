@@ -1,17 +1,14 @@
-// EstimateListFragment.java
-// 받은 견적 목록 화면 (RecyclerView)
-// - estimate_request 테이블 기준으로 받은 견적 리스트 표시
-// - 클릭 시 EstimateDetailActivity 이동
-
 package com.example.my_o2o_app.view.estimate;
 
 import android.content.Intent;
+import android.graphics.Color; // ✅ 추가
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,12 +27,18 @@ import java.util.List;
 
 public class EstimateListFragment extends Fragment {
 
-    private static final String TAG = "EstimateListFragment"; // ✅ 로그 태그
+    private static final String TAG = "EstimateListFragment";
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private EstimateAdapter adapter;
     private EstimateViewModel viewModel;
+
+    // 상단 필터 버튼
+    private TextView tvFilterRequesting, tvFilterResponding, tvFilterExpired;
+
+    // 전체 견적 리스트 (필터링용)
+    private List<EstimateRequest> allEstimates = new ArrayList<>();
 
     @Nullable
     @Override
@@ -45,48 +48,107 @@ public class EstimateListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewEstimate);
         progressBar = view.findViewById(R.id.progressBarEstimate);
 
+        // 상단 필터 TextView 연결
+        tvFilterRequesting = view.findViewById(R.id.tvFilterRequesting);
+        tvFilterResponding = view.findViewById(R.id.tvFilterResponding);
+        tvFilterExpired = view.findViewById(R.id.tvFilterExpired);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // ✅ 어댑터 클릭 이벤트 → 상세 화면 이동
+        // 어댑터 생성 (아이템 클릭 시 상세 화면 이동)
         adapter = new EstimateAdapter(estimate -> {
             Log.d(TAG, "카드 클릭: estimateId=" + estimate.getEstimateId());
-
             Intent intent = new Intent(getContext(), EstimateDetailActivity.class);
             intent.putExtra("estimateId", estimate.getEstimateId());
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
 
-        Log.d(TAG, "onCreateView: Fragment 생성 완료");
+        // 🔹 필터 클릭 이벤트 설정
+        tvFilterRequesting.setOnClickListener(v -> filterByStatus("요청중"));
+        tvFilterResponding.setOnClickListener(v -> filterByStatus("응답중"));
+        tvFilterExpired.setOnClickListener(v -> filterByStatus("만료"));
 
         // ViewModel 초기화
         viewModel = new ViewModelProvider(this).get(EstimateViewModel.class);
         observeViewModel();
 
-        // 임시: 사용자 ID 1번 기준으로 테스트
-        Log.d(TAG, "onCreateView: loadEstimates 호출");
+        // 예시: 사용자 ID 1번으로 견적 목록 로드
         viewModel.loadEstimates(1);
 
         return view;
     }
 
+    /** LiveData 관찰 → RecyclerView 갱신 */
     private void observeViewModel() {
         viewModel.getEstimateList().observe(getViewLifecycleOwner(), estimateList -> {
-            Log.d(TAG, "LiveData 수신: " + (estimateList != null ? estimateList.size() : "null"));
-            updateUI(estimateList);
+            progressBar.setVisibility(View.GONE);
+
+            if (estimateList == null) {
+                Log.w(TAG, "서버에서 견적 목록 없음 → 빈 리스트 처리");
+                estimateList = new ArrayList<>();
+            }
+
+            // 전체 리스트 보관
+            allEstimates = estimateList;
+
+            // 초기 표시: 전체 리스트
+            adapter.updateData(allEstimates);
+
+            // 상태별 건수 갱신
+            updateFilterCounts();
         });
     }
 
-    private void updateUI(List<EstimateRequest> estimateList) {
-        progressBar.setVisibility(View.GONE);
-
-        // ✅ Null-safe 처리
-        if (estimateList == null) {
-            Log.w(TAG, "updateUI: 서버 응답 없음 → 빈 목록으로 처리");
-            adapter.updateData(new ArrayList<>());
-        } else {
-            Log.d(TAG, "updateUI: 목록 갱신, 개수 = " + estimateList.size());
-            adapter.updateData(estimateList);
+    /** 상태별 필터링 */
+    private void filterByStatus(String status) {
+        List<EstimateRequest> filtered = new ArrayList<>();
+        for (EstimateRequest e : allEstimates) {
+            if (status.equals(e.getStatus())) {
+                filtered.add(e);
+            }
         }
+        adapter.updateData(filtered);
+
+        // 🔹 필터 선택 시 강조
+        highlightSelectedFilter(status);
+    }
+
+    /** 🔹 선택된 필터만 강조 + 글씨 색상 변경 */
+    private void highlightSelectedFilter(String status) {
+        // 초기화
+        tvFilterRequesting.setBackgroundResource(R.drawable.bg_filter_unselected);
+        tvFilterResponding.setBackgroundResource(R.drawable.bg_filter_unselected);
+        tvFilterExpired.setBackgroundResource(R.drawable.bg_filter_unselected);
+
+        tvFilterRequesting.setTextColor(Color.BLACK);
+        tvFilterResponding.setTextColor(Color.BLACK);
+        tvFilterExpired.setTextColor(Color.BLACK);
+
+        switch (status) {
+            case "요청중":
+                tvFilterRequesting.setBackgroundResource(R.drawable.bg_filter_selected);
+                tvFilterRequesting.setTextColor(Color.WHITE);
+                break;
+            case "응답중":
+                tvFilterResponding.setBackgroundResource(R.drawable.bg_filter_selected);
+                tvFilterResponding.setTextColor(Color.WHITE);
+                break;
+            case "만료":
+                tvFilterExpired.setBackgroundResource(R.drawable.bg_filter_selected);
+                tvFilterExpired.setTextColor(Color.WHITE);
+                break;
+        }
+    }
+
+    /** 상태별 건수 갱신 */
+    private void updateFilterCounts() {
+        long requesting = allEstimates.stream().filter(e -> "요청중".equals(e.getStatus())).count();
+        long responding = allEstimates.stream().filter(e -> "응답중".equals(e.getStatus())).count();
+        long expired = allEstimates.stream().filter(e -> "만료".equals(e.getStatus())).count();
+
+        tvFilterRequesting.setText("요청중(" + requesting + ")");
+        tvFilterResponding.setText("응답중(" + responding + ")");
+        tvFilterExpired.setText("만료(" + expired + ")");
     }
 }

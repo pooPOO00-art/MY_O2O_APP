@@ -4,6 +4,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- 🔹 상단 상태 필터 (요청중 / 응답중 / 만료) -->
+    <LinearLayout
+        android:id="@+id/layoutFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp">
+
+        <TextView
+            android:id="@+id/tvFilterRequesting"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="4dp"
+            android:gravity="center"
+            android:background="@drawable/bg_filter_selected"
+            android:text="요청중(0)"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tvFilterResponding"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="4dp"
+            android:gravity="center"
+            android:background="@drawable/bg_filter_unselected"
+            android:text="응답중(0)"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tvFilterExpired"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="4dp"
+            android:gravity="center"
+            android:background="@drawable/bg_filter_unselected"
+            android:text="만료(0)"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+
+    <!-- 로딩바 -->
     <ProgressBar
         android:id="@+id/progressBarEstimate"
         android:layout_width="wrap_content"
@@ -11,6 +63,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="24dp" />
 
+    <!-- RecyclerView: 받은 견적 목록 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewEstimate"
         android:layout_width="match_parent"
