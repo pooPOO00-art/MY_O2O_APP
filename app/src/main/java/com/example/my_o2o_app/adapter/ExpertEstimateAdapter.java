@@ -14,6 +14,8 @@ import com.example.my_o2o_app.model.ExpertEstimate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class ExpertEstimateAdapter extends RecyclerView.Adapter<ExpertEstimateAdapter.ViewHolder> {
 
@@ -46,14 +48,36 @@ public class ExpertEstimateAdapter extends RecyclerView.Adapter<ExpertEstimateAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ExpertEstimate expert = expertList.get(position);
 
+        // 업체명
         holder.tvCompanyName.setText(expert.getCompanyName());
-        holder.tvPrice.setText(expert.getPrice() + "원");
+
+        // ✅ 견적 메시지
         holder.tvMessage.setText(expert.getMessage());
 
+        // ✅ 금액에 천 단위 콤마 추가
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.KOREA);
+        holder.tvPrice.setText(numberFormat.format(expert.getPrice()) + "원");
+
+        // ✅ 리뷰 표시 (모델에 rating, reviewCount 있을 경우)
+//        if (holder.tvReview != null) {
+//            holder.tvReview.setText("⭐ " + expert.getRating() + " (" + expert.getReviewCount() + ")");
+//        }
+
+//        // ✅ Glide로 프로필 이미지 로드
+//        if (holder.ivProfile != null) {
+//            Glide.with(holder.itemView.getContext())
+//                    .load(expert.getProfileImage())
+//                    .placeholder(R.drawable.ic_placeholder) // 기본 이미지
+//                    .circleCrop() // 원형 처리
+//                    .into(holder.ivProfile);
+//        }
+
+        // ✅ 아이템 클릭 이벤트
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onItemClick(expert);
         });
     }
+
 
     @Override
     public int getItemCount() {

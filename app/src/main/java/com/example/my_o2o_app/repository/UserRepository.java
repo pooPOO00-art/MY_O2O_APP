@@ -68,7 +68,7 @@ public class UserRepository {
         body.addProperty("id", id);
         body.addProperty("password", password);
         body.addProperty("name", name);
-        body.addProperty("phone_number", phoneNumber);
+        body.addProperty("phone", phoneNumber);
 
         Call<JsonObject> call = apiService.registerUser(body);
         call.enqueue(new Callback<JsonObject>() {

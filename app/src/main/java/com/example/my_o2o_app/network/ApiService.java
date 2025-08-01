@@ -36,7 +36,10 @@ public interface ApiService {
     Call<JsonObject> loginUser(@Body JsonObject body);
 
     /** 회원가입 */
-    @POST("/register")
+//    @POST("/register")
+//    Call<JsonObject> registerUser(@Body JsonObject userData);
+    /** 회원가입 */
+    @POST("/user/register")
     Call<JsonObject> registerUser(@Body JsonObject userData);
 
     // ----------------------

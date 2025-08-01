@@ -1,82 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <!-- 1️⃣ 상단 영역 -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="220dp">
 
-        <!-- 1️⃣ 상단 프로필 -->
-        <ImageView
-            android:id="@+id/ivProfile"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_placeholder"
-            android:scaleType="centerCrop"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/rounded_corner"/>
-
-        <TextView
-            android:id="@+id/tvCompanyName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="업체명"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"/>
-
-        <TextView
-            android:id="@+id/tvRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="⭐ 4.9 (후기 58)"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
-            android:layout_gravity="center_horizontal"/>
-
-        <TextView
-            android:id="@+id/tvRegion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="충북 청주시"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
-            android:layout_gravity="center_horizontal"/>
-
-        <!-- 2️⃣ 업체 설명 -->
-        <TextView
-            android:id="@+id/tvDescription"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="업체 설명이 여기에 표시됩니다."
-            android:textSize="14sp"
-            android:layout_marginTop="16dp"/>
+            android:layout_height="match_parent">
 
-        <!-- 3️⃣ 하단 버튼 -->
+            <!-- 블러 처리될 배경 (임시 회색) -->
+            <ImageView
+                android:id="@+id/ivBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="#E0E0E0" />
+
+            <!-- 프로필 이미지 (중앙 하단) -->
+            <ImageView
+                android:id="@+id/ivProfile"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/ic_placeholder"
+                android:scaleType="centerCrop"
+                android:background="@drawable/rounded_corner" />
+        </FrameLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- 2️⃣ 본문 스크롤 영역 -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="24dp"
-            android:gravity="center">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <Button
-                android:id="@+id/btnChat"
+            <!-- 업체명 -->
+            <TextView
+                android:id="@+id/tvCompanyName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="채팅하기"/>
+                android:text="업체명"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
 
-            <Button
-                android:id="@+id/btnReserve"
+            <!-- 대표 서비스 카테고리 -->
+            <TextView
+                android:id="@+id/tvRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="예약하기"
-                android:layout_marginStart="16dp"/>
+                android:text="⭐ 4.9 (후기 58)"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp" />
+
+            <!-- 주소 / 이동거리 -->
+            <TextView
+                android:id="@+id/tvRegion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="충북 청주시 / 50km 이동 가능"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp" />
+
+            <!-- 업체 설명 -->
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="업체 설명이 여기에 표시됩니다."
+                android:textSize="14sp"
+                android:layout_marginTop="12dp" />
+
+            <!-- 3️⃣ 고용/리뷰/경력 3분할 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="고용 100회"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="⭐ 4.5"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="총 경력 2년"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- 4️⃣ 버튼 영역 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/btnChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="채팅하기" />
+
+                <Button
+                    android:id="@+id/btnReserve"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="예약하기"
+                    android:layout_marginStart="16dp" />
+            </LinearLayout>
+
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
-</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
