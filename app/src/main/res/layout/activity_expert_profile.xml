@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 상단 영역 -->
+    <!-- 상단 영역: 배경 + 프로필 -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="220dp">
@@ -13,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- 배경 -->
+            <!-- 배경 이미지 -->
             <ImageView
                 android:id="@+id/ivBackground"
                 android:layout_width="match_parent"
@@ -21,7 +22,7 @@
                 android:scaleType="centerCrop"
                 android:background="#E0E0E0" />
 
-            <!-- 프로필 -->
+            <!-- 프로필 이미지 -->
             <ImageView
                 android:id="@+id/ivProfile"
                 android:layout_width="100dp"
@@ -34,7 +35,7 @@
         </FrameLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- 본문 영역 -->
+    <!-- 업체 상세 정보 스크롤 영역 -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -83,7 +84,7 @@
                 android:textSize="14sp"
                 android:layout_marginTop="12dp" />
 
-            <!-- 고용/리뷰/경력 3분할 -->
+            <!-- 고용/리뷰/경력 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -119,14 +120,18 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- 하단 버튼 영역: 여기에는 동적으로 다른 버튼 레이아웃을 넣음 -->
-            <FrameLayout
-                android:id="@+id/layoutBottomContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp" />
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <!-- ✅ 하단 고정 버튼 영역 (배경/높이 강화) -->
+    <FrameLayout
+        android:id="@+id/layoutBottomFixed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF"
+        android:elevation="16dp"
+        android:translationZ="16dp"
+        android:padding="12dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

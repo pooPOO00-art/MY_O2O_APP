@@ -61,6 +61,7 @@ public class EstimateDetailActivity extends AppCompatActivity {
             // 전문가 상세 화면으로 이동
             Intent intent = new Intent(this, ExpertProfileActivity.class);
             intent.putExtra("expertId", expert.getExpertId());
+            intent.putExtra("from", "estimate"); // ★ 받은견적에서 진입이므로 채팅 버튼 표시
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
