@@ -16,12 +16,13 @@ import retrofit2.Response;
 public class EstimateViewModel extends ViewModel {
 
     private final MutableLiveData<List<EstimateRequest>> estimateList = new MutableLiveData<>();
-    private final UserEstimateRepository repository = new UserEstimateRepository(); // ✅ 수정
+    private final UserEstimateRepository repository = new UserEstimateRepository();
 
     public LiveData<List<EstimateRequest>> getEstimateList() {
         return estimateList;
     }
 
+    /** 견적 목록 조회 */
     public void loadEstimates(int userId) {
         repository.getUserEstimates(userId, new Callback<List<EstimateRequest>>() {
             @Override
@@ -36,6 +37,26 @@ public class EstimateViewModel extends ViewModel {
             @Override
             public void onFailure(Call<List<EstimateRequest>> call, Throwable t) {
                 estimateList.postValue(null);
+            }
+        });
+    }
+
+    /** 🔹 상태 업데이트 */
+    public void updateEstimateStatus(int estimateId, String status) {
+        repository.updateEstimateStatus(estimateId, status, new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // 로그만 남김 (UI 갱신은 observe에서 처리됨)
+                    System.out.println("✅ 상태 업데이트 성공: id=" + estimateId + ", status=" + status);
+                } else {
+                    System.out.println("⚠ 상태 업데이트 실패: id=" + estimateId);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                System.out.println("❌ 상태 업데이트 네트워크 오류: " + t.getMessage());
             }
         });
     }

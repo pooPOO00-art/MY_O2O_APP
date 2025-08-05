@@ -1,7 +1,7 @@
 package com.example.my_o2o_app.view.estimate;
 
 import android.content.Intent;
-import android.graphics.Color; // ✅ 추가
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,11 +20,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.my_o2o_app.R;
 import com.example.my_o2o_app.adapter.EstimateAdapter;
 import com.example.my_o2o_app.model.EstimateRequest;
-import com.example.my_o2o_app.viewmodel.EstimateViewModel;
+import com.example.my_o2o_app.view.expert.ExpertProfileActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 받은 견적 목록 화면 (안정화 + 프로필 이동 지원)
+ * - 초기 표시: 요청중 상태만
+ * - 상태별 필터: 요청중 / 응답중 / 만료
+ * - 카드 클릭 시:
+ *   1) expertId 없는 경우 → EstimateDetailActivity 이동
+ *   2) expertId 있는 경우 → ExpertProfileActivity 이동
+ */
 public class EstimateListFragment extends Fragment {
 
     private static final String TAG = "EstimateListFragment";
@@ -32,7 +40,7 @@ public class EstimateListFragment extends Fragment {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private EstimateAdapter adapter;
-    private EstimateViewModel viewModel;
+    private com.example.my_o2o_app.viewmodel.EstimateViewModel viewModel;
 
     // 상단 필터 버튼
     private TextView tvFilterRequesting, tvFilterResponding, tvFilterExpired;
@@ -55,12 +63,29 @@ public class EstimateListFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // 어댑터 생성 (아이템 클릭 시 상세 화면 이동)
+        // ✅ 어댑터 생성 (아이템 클릭 시 상태별 화면 이동)
         adapter = new EstimateAdapter(estimate -> {
-            Log.d(TAG, "카드 클릭: estimateId=" + estimate.getEstimateId());
-            Intent intent = new Intent(getContext(), EstimateDetailActivity.class);
-            intent.putExtra("estimateId", estimate.getEstimateId());
-            startActivity(intent);
+            if (estimate == null) return;
+
+            Integer expertId = estimate.getExpertId();
+            String status = estimate.getStatus();
+
+            Log.d(TAG, "카드 클릭: estimateId=" + estimate.getEstimateId() +
+                    ", status=" + status +
+                    ", expertId=" + expertId);
+
+            if (expertId == null || expertId <= 0) {
+                // 전문가 정보 없음 → 견적 상세 화면으로 이동
+                Intent intent = new Intent(getContext(), EstimateDetailActivity.class);
+                intent.putExtra("estimateId", estimate.getEstimateId());
+                startActivity(intent);
+            } else {
+                // 전문가 정보 있음 → 전문가 프로필 화면으로 이동
+                Intent intent = new Intent(getContext(), ExpertProfileActivity.class);
+                intent.putExtra("expertId", expertId);
+                intent.putExtra("from", "estimate"); // 받은견적 → 채팅 버튼 표시
+                startActivity(intent);
+            }
         });
         recyclerView.setAdapter(adapter);
 
@@ -70,7 +95,7 @@ public class EstimateListFragment extends Fragment {
         tvFilterExpired.setOnClickListener(v -> filterByStatus("만료"));
 
         // ViewModel 초기화
-        viewModel = new ViewModelProvider(this).get(EstimateViewModel.class);
+        viewModel = new ViewModelProvider(this).get(com.example.my_o2o_app.viewmodel.EstimateViewModel.class);
         observeViewModel();
 
         // 예시: 사용자 ID 1번으로 견적 목록 로드
@@ -92,11 +117,20 @@ public class EstimateListFragment extends Fragment {
             // 전체 리스트 보관
             allEstimates = estimateList;
 
-            // 초기 표시: 전체 리스트
-            adapter.updateData(allEstimates);
+            // 초기 화면: 요청중 상태만 표시
+            List<EstimateRequest> requestingList = new ArrayList<>();
+            for (EstimateRequest e : allEstimates) {
+                if ("요청중".equals(e.getStatus())) {
+                    requestingList.add(e);
+                }
+            }
+            adapter.updateData(requestingList);
 
             // 상태별 건수 갱신
             updateFilterCounts();
+
+            // 요청중 필터 강조
+            highlightSelectedFilter("요청중");
         });
     }
 

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 1️⃣ 상단 영역 -->
+    <!-- 상단 영역 -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="220dp">
@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- 블러 처리될 배경 (임시 회색) -->
+            <!-- 배경 -->
             <ImageView
                 android:id="@+id/ivBackground"
                 android:layout_width="match_parent"
@@ -21,7 +21,7 @@
                 android:scaleType="centerCrop"
                 android:background="#E0E0E0" />
 
-            <!-- 프로필 이미지 (중앙 하단) -->
+            <!-- 프로필 -->
             <ImageView
                 android:id="@+id/ivProfile"
                 android:layout_width="100dp"
@@ -34,7 +34,7 @@
         </FrameLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- 2️⃣ 본문 스크롤 영역 -->
+    <!-- 본문 영역 -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -56,7 +56,7 @@
                 android:textStyle="bold"
                 android:layout_marginTop="8dp" />
 
-            <!-- 대표 서비스 카테고리 -->
+            <!-- 평점 -->
             <TextView
                 android:id="@+id/tvRating"
                 android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
                 android:textSize="14sp"
                 android:layout_marginTop="4dp" />
 
-            <!-- 주소 / 이동거리 -->
+            <!-- 주소 -->
             <TextView
                 android:id="@+id/tvRegion"
                 android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
                 android:textSize="14sp"
                 android:layout_marginTop="4dp" />
 
-            <!-- 업체 설명 -->
+            <!-- 설명 -->
             <TextView
                 android:id="@+id/tvDescription"
                 android:layout_width="match_parent"
@@ -83,7 +83,7 @@
                 android:textSize="14sp"
                 android:layout_marginTop="12dp" />
 
-            <!-- 3️⃣ 고용/리뷰/경력 3분할 -->
+            <!-- 고용/리뷰/경력 3분할 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,51 +92,39 @@
                 android:layout_marginTop="16dp">
 
                 <TextView
+                    android:id="@+id/tvHireCount"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="고용 100회"
+                    android:text="고용 0회"
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/tvRatingStat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="⭐ 4.5"
+                    android:text="⭐ 0.0 (0)"
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/tvCareerStat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="총 경력 2년"
+                    android:text="총 경력 0년"
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- 4️⃣ 버튼 영역 -->
-            <LinearLayout
+            <!-- 하단 버튼 영역: 여기에는 동적으로 다른 버튼 레이아웃을 넣음 -->
+            <FrameLayout
+                android:id="@+id/layoutBottomContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="24dp"
-                android:gravity="center">
-
-                <Button
-                    android:id="@+id/btnChat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="채팅하기" />
-
-                <Button
-                    android:id="@+id/btnReserve"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="예약하기"
-                    android:layout_marginStart="16dp" />
-            </LinearLayout>
+                android:layout_marginTop="24dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

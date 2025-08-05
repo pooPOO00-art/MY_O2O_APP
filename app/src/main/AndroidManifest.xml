@@ -36,7 +36,7 @@
 
         <activity android:name=".view.estimate.EstimateDetailActivity" />
         <activity android:name=".view.expert.ExpertProfileActivity" />
-
+        <activity android:name=".view.chat.ChatActivity"/>
         <activity
             android:name=".view.MainActivity"
             android:exported="true">

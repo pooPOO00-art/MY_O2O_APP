@@ -1,5 +1,6 @@
 package com.example.my_o2o_app.view.user.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.example.my_o2o_app.R;
 import com.example.my_o2o_app.adapter.ExpertAdapter;
 import com.example.my_o2o_app.view.common.CategorySelectBottomSheetDialog;
 import com.example.my_o2o_app.view.common.RegionSelectBottomSheetDialog;
+import com.example.my_o2o_app.view.expert.ExpertProfileActivity;
 import com.example.my_o2o_app.viewmodel.ExpertListViewModel;
 
 public class FindExpertFragment extends Fragment {
@@ -49,9 +51,24 @@ public class FindExpertFragment extends Fragment {
         btnCategoryFilter = view.findViewById(R.id.btnCategoryFilter);
         btnLocationFilter = view.findViewById(R.id.btnLocationFilter);
 
+        // ✅ RecyclerView + Adapter 설정
         rvExperts.setLayoutManager(new LinearLayoutManager(getContext()));
         expertAdapter = new ExpertAdapter();
         rvExperts.setAdapter(expertAdapter);
+
+        // ✅ 전문가 카드 클릭 → 상세 프로필 이동
+        expertAdapter.setOnItemClickListener(expert -> {
+            if (expert == null || expert.getExpertId() <= 0) {
+                Log.e("FindExpertFragment", "잘못된 expert 클릭됨, 이동 취소");
+                return;
+            }
+
+            Log.d("FindExpertFragment", "카드 클릭됨, expertId=" + expert.getExpertId());
+            Intent intent = new Intent(requireContext(), ExpertProfileActivity.class);
+            intent.putExtra("expertId", expert.getExpertId()); // 상세 화면에 ID 전달
+            intent.putExtra("from", "find_expert");           // ✅ 고수찾기에서 이동
+            startActivity(intent);
+        });
 
         // ✅ ViewModel 초기화
         viewModel = new ViewModelProvider(this).get(ExpertListViewModel.class);
@@ -82,14 +99,14 @@ public class FindExpertFragment extends Fragment {
             dialog.show(getChildFragmentManager(), "category_select");
         });
 
-        // ✅ 지역 필터 (공용 RegionSelectBottomSheetDialog)
+        // ✅ 지역 필터
         btnLocationFilter.setOnClickListener(v -> {
             RegionSelectBottomSheetDialog dialog = new RegionSelectBottomSheetDialog();
             dialog.setOnRegionSelectedListener((regionId, districtId, regionName, districtName) -> {
                 selectedRegionId = regionId;
                 selectedDistrictId = districtId;
 
-                // 버튼 라벨
+                // 버튼 라벨 갱신
                 if ("전체".equals(regionName) && "전체".equals(districtName)) {
                     btnLocationFilter.setText("지역 전체");
                 } else if ("전체".equals(districtName)) {

@@ -20,9 +20,23 @@ import com.example.my_o2o_app.model.ExpertWithStats;
 import java.util.ArrayList;
 import java.util.List;
 
+// ExpertAdapter.java
+
 public class ExpertAdapter extends RecyclerView.Adapter<ExpertAdapter.ExpertViewHolder> {
 
     private List<ExpertWithStats> expertList = new ArrayList<>();
+
+    /** 외부 클릭 리스너 인터페이스 */
+    public interface OnItemClickListener {
+        void onItemClick(ExpertWithStats expert);
+    }
+
+    private OnItemClickListener listener;
+
+    /** 외부에서 클릭 리스너 설정 */
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     /** 외부에서 리스트 갱신 */
     public void submitList(List<ExpertWithStats> list) {
@@ -74,6 +88,11 @@ public class ExpertAdapter extends RecyclerView.Adapter<ExpertAdapter.ExpertView
         } else {
             holder.ivProfile.setImageResource(R.drawable.ic_placeholder);
         }
+
+        // ✅ 아이템 클릭 이벤트
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onItemClick(expert);
+        });
     }
 
     @Override
@@ -81,7 +100,7 @@ public class ExpertAdapter extends RecyclerView.Adapter<ExpertAdapter.ExpertView
         return expertList.size();
     }
 
-    /** ViewHolder: item_expert.xml의 모든 View 참조 */
+    /** ViewHolder */
     static class ExpertViewHolder extends RecyclerView.ViewHolder {
         ImageView ivProfile;
         TextView tvCompanyName, tvRatingCareerReservation, tvDescription, tvServiceInfo;
@@ -90,9 +109,9 @@ public class ExpertAdapter extends RecyclerView.Adapter<ExpertAdapter.ExpertView
             super(itemView);
             ivProfile = itemView.findViewById(R.id.ivProfile);
             tvCompanyName = itemView.findViewById(R.id.tvCompanyName);
-            tvRatingCareerReservation = itemView.findViewById(R.id.tvRatingCareerReservation); // ⭐평점+경력+예약
-            tvDescription = itemView.findViewById(R.id.tvDescription);       // 업체 설명
-            tvServiceInfo = itemView.findViewById(R.id.tvServiceInfo);       // 대표 서비스/지역
+            tvRatingCareerReservation = itemView.findViewById(R.id.tvRatingCareerReservation);
+            tvDescription = itemView.findViewById(R.id.tvDescription);
+            tvServiceInfo = itemView.findViewById(R.id.tvServiceInfo);
         }
     }
 }

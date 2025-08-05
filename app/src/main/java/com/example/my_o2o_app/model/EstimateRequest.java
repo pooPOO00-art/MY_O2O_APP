@@ -51,4 +51,7 @@ public class EstimateRequest {
 
     public int getReceivedCount() { return receivedCount; }
     public int getHoursLeft() { return hoursLeft; }
+
+    public void setStatus(String status) { this.status = status; }
+
 }

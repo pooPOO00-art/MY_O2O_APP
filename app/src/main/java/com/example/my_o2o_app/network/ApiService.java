@@ -20,6 +20,8 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.PATCH;
+
 
 /**
  * Retrofit API Service
@@ -81,6 +83,13 @@ public interface ApiService {
             @Query("district_id") Integer districtId,
             @Query("region_id") Integer regionId,
             @Query("keyword") String keyword
+    );
+
+    // ✅ 받은 견적 상태 업데이트
+    @PATCH("/estimate/status")
+    Call<Void> updateEstimateStatus(
+            @Query("estimateId") int estimateId,
+            @Query("status") String status
     );
     // ----------------------
     // 4️⃣ 지역(도/시군구) 관련
