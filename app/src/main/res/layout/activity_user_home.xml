@@ -14,7 +14,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".view.user.UserHomeActivity">
+    tools:context=".view.user.UserHomeActivity"
+    android:background="#FFFFFF">
 
     <!-- 상단 앱 로고 + 사용자 이름 -->
     <LinearLayout

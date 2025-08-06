@@ -16,7 +16,8 @@
     android:padding="24dp"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context="com.example.my_o2o_app.view.user.UserLoginActivity">
+    tools:context="com.example.my_o2o_app.view.user.UserLoginActivity"
+    android:background="#FFFFFF">
 
     <!-- 앱 이름 또는 로그인 안내 -->
     <TextView

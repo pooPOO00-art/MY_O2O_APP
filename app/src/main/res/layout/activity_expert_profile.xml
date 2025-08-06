@@ -3,76 +3,67 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
-    <!-- 상단 영역: 배경 + 프로필 -->
+    <!-- 상단 영역: 배경 이미지 -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="220dp">
+        android:layout_height="170dp">
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/ivBackground"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <!-- 배경 이미지 -->
-            <ImageView
-                android:id="@+id/ivBackground"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:background="#E0E0E0" />
-
-            <!-- 프로필 이미지 -->
-            <ImageView
-                android:id="@+id/ivProfile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="12dp"
-                android:src="@drawable/ic_placeholder"
-                android:scaleType="centerCrop"
-                android:background="@drawable/rounded_corner" />
-        </FrameLayout>
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="#E0E0E0" />
     </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- ✅ 좌측으로 치우친 프로필 이미지 -->
+    <ImageView
+        android:id="@+id/ivProfile"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="top|start"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="24dp"
+        android:src="@drawable/ic_placeholder"
+        android:scaleType="centerCrop"
+        android:background="@drawable/rounded_corner"
+        android:elevation="8dp" />
 
     <!-- 업체 상세 정보 스크롤 영역 -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginTop="30dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp">
 
             <!-- 업체명 -->
             <TextView
                 android:id="@+id/tvCompanyName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="업체명"
+                android:text=""
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp" />
+                android:textStyle="bold" />
 
-            <!-- 평점 -->
-            <TextView
-                android:id="@+id/tvRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="⭐ 4.9 (후기 58)"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp" />
-
-            <!-- 주소 -->
+            <!-- 주소 (지역 정보) -->
             <TextView
                 android:id="@+id/tvRegion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="충북 청주시 / 50km 이동 가능"
+                android:text=""
                 android:textSize="14sp"
+                android:textColor="#555555"
                 android:layout_marginTop="4dp" />
 
             <!-- 설명 -->
@@ -80,50 +71,108 @@
                 android:id="@+id/tvDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="업체 설명이 여기에 표시됩니다."
+                android:text=""
                 android:textSize="14sp"
                 android:layout_marginTop="12dp" />
 
-            <!-- 고용/리뷰/경력 -->
+            <!-- ✅ 고용/리뷰/경력 카드 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="3"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginHorizontal="0dp"
+                android:background="@drawable/bg_stat_card"
+            android:padding="16dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
 
-                <TextView
-                    android:id="@+id/tvHireCount"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+
+            <!-- 고용 -->
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="고용 0회"
-                    android:textSize="14sp" />
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/tvRatingStat"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="고용"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#666666"/>
+
+                    <TextView
+                        android:id="@+id/tvHireCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="16sp"
+                        android:textColor="#000000"/>
+                </LinearLayout>
+
+                <!-- 리뷰 -->
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="⭐ 0.0 (0)"
-                    android:textSize="14sp" />
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/tvCareerStat"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="리뷰"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#666666"/>
+
+                    <TextView
+                        android:id="@+id/tvRatingStat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="16sp"
+                        android:textColor="#000000"/>
+                </LinearLayout>
+
+                <!-- 총 경력 -->
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="총 경력 0년"
-                    android:textSize="14sp" />
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="총 경력"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#666666"/>
+
+                    <TextView
+                        android:id="@+id/tvCareerStat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="16sp"
+                        android:textColor="#000000"/>
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- ✅ 하단 고정 버튼 영역 (배경/높이 강화) -->
+    <!-- ✅ 하단 고정 버튼 영역 -->
     <FrameLayout
         android:id="@+id/layoutBottomFixed"
         android:layout_width="match_parent"

@@ -76,7 +76,7 @@ public class ExpertProfileActivity extends AppCompatActivity {
         tvCompanyName = findViewById(R.id.tvCompanyName);
         tvDescription = findViewById(R.id.tvDescription);
         tvRegion = findViewById(R.id.tvRegion);
-        tvRating = findViewById(R.id.tvRating);
+
 
         tvHireCount = findViewById(R.id.tvHireCount);
         tvRatingStat = findViewById(R.id.tvRatingStat);
@@ -176,11 +176,11 @@ public class ExpertProfileActivity extends AppCompatActivity {
         tvCompanyName.setText(expert.getCompanyName());
         tvDescription.setText(expert.getDescription());
         tvRegion.setText(expert.getServiceInfo());
-        tvRating.setText("⭐ " + expert.getAvgRating() + " (" + expert.getReviewCount() + ")");
 
-        tvHireCount.setText("고용 " + expert.getReservationCount() + "회");
+
+        tvHireCount.setText(expert.getReservationCount() + "회");
         tvRatingStat.setText("⭐ " + expert.getAvgRating() + " (" + expert.getReviewCount() + ")");
-        tvCareerStat.setText("총 경력 " + expert.getCareerYears() + "년");
+        tvCareerStat.setText(expert.getCareerYears() + "년");
 
         if (!expert.getProfileImage().isEmpty()) {
             Glide.with(this)
