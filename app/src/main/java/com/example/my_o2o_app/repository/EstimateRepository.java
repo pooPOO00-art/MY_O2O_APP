@@ -18,6 +18,7 @@ import retrofit2.Response;
  * 견적 요청 관련 Repository
  * - 질문/옵션 불러오기
  * - 선택 옵션 서버 전송
+ * - 직접 견적 시 expertId 포함
  */
 public class EstimateRepository {
 
@@ -54,9 +55,10 @@ public class EstimateRepository {
 
     /**
      * 견적 요청 제출
-     * @param body - userId, categoryId, districtId, optionIds 포함
+     * @param body - userId, categoryId, districtId, optionIds, expertId 포함 // 🔹 수정
      */
     public void submitEstimate(EstimateRequestBody body, Runnable onSuccess, Runnable onError) {
+        // 🔹 ApiService.submitEstimate()는 POST JSON Body 전송
         apiService.submitEstimate(body).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

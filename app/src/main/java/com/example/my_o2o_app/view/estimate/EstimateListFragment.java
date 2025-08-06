@@ -106,6 +106,7 @@ public class EstimateListFragment extends Fragment {
     }
 
     /** LiveData 관찰 → RecyclerView 갱신 */
+    /** LiveData 관찰 → RecyclerView 갱신 */
     private void observeViewModel() {
         viewModel.getEstimateList().observe(getViewLifecycleOwner(), estimateList -> {
             progressBar.setVisibility(View.GONE);
@@ -115,22 +116,19 @@ public class EstimateListFragment extends Fragment {
                 estimateList = new ArrayList<>();
             }
 
-            // 전체 리스트 보관
             allEstimates = estimateList;
 
-            // 초기 화면: 요청중 상태만 표시
+            // 초기 화면: 요청중 + 직접견적
             List<EstimateRequest> requestingList = new ArrayList<>();
             for (EstimateRequest e : allEstimates) {
-                if ("요청중".equals(e.getStatus())) {
+                String s = e.getStatus();
+                if ("요청중".equals(s) || "직접견적".equals(s)) {
                     requestingList.add(e);
                 }
             }
             adapter.updateData(requestingList);
 
-            // 상태별 건수 갱신
             updateFilterCounts();
-
-            // 요청중 필터 강조
             highlightSelectedFilter("요청중");
         });
     }
@@ -139,13 +137,22 @@ public class EstimateListFragment extends Fragment {
     private void filterByStatus(String status) {
         List<EstimateRequest> filtered = new ArrayList<>();
         for (EstimateRequest e : allEstimates) {
-            if (status.equals(e.getStatus())) {
-                filtered.add(e);
+            String s = e.getStatus();
+            if (status.equals("요청중")) {
+                if ("요청중".equals(s) || "직접견적".equals(s)) {
+                    filtered.add(e);
+                }
+            } else if (status.equals("응답중")) {
+                if ("응답중".equals(s) || "직접견적(응답중)".equals(s)) {
+                    filtered.add(e);
+                }
+            } else if (status.equals("만료")) {
+                if ("만료".equals(s)) {
+                    filtered.add(e);
+                }
             }
         }
         adapter.updateData(filtered);
-
-        // 🔹 필터 선택 시 강조
         highlightSelectedFilter(status);
     }
 
@@ -177,10 +184,25 @@ public class EstimateListFragment extends Fragment {
     }
 
     /** 상태별 건수 갱신 */
+    /** 상태별 건수 갱신 */
     private void updateFilterCounts() {
-        long requesting = allEstimates.stream().filter(e -> "요청중".equals(e.getStatus())).count();
-        long responding = allEstimates.stream().filter(e -> "응답중".equals(e.getStatus())).count();
-        long expired = allEstimates.stream().filter(e -> "만료".equals(e.getStatus())).count();
+        long requesting = allEstimates.stream()
+                .filter(e -> {
+                    String s = e.getStatus();
+                    return "요청중".equals(s) || "직접견적".equals(s);
+                })
+                .count();
+
+        long responding = allEstimates.stream()
+                .filter(e -> {
+                    String s = e.getStatus();
+                    return "응답중".equals(s) || "직접견적(응답중)".equals(s);
+                })
+                .count();
+
+        long expired = allEstimates.stream()
+                .filter(e -> "만료".equals(e.getStatus()))
+                .count();
 
         tvFilterRequesting.setText("요청중(" + requesting + ")");
         tvFilterResponding.setText("응답중(" + responding + ")");

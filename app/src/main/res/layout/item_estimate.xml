@@ -29,6 +29,20 @@
             android:text="홈 청소 | 서울 강남구"
             android:textSize="16sp"
             android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvDirectBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="직접"
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/bg_direct_badge"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:layout_marginStart="6dp"
+            android:visibility="gone"/> <!-- 기본은 숨김 -->
+
     </LinearLayout>
 
     <!-- 2️⃣ 남은 시간 + 받은 견적 수 -->

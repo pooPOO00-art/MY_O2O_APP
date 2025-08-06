@@ -8,7 +8,7 @@ package com.example.my_o2o_app.model;
 public class EstimateRequest {
     private int estimateId;
     private int userId;
-    private Integer expertId;
+    private Integer expertId;       // ✅ 직접견적용 필드
 
     private int districtId;
     private String districtName;    // ✅ 지역명
@@ -54,4 +54,8 @@ public class EstimateRequest {
 
     public void setStatus(String status) { this.status = status; }
 
+    /** ✅ 직접 견적인지 여부 */
+    public boolean isDirect() {
+        return expertId != null && expertId > 0;
+    }
 }

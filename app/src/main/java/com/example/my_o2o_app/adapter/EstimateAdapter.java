@@ -59,6 +59,13 @@ public class EstimateAdapter extends RecyclerView.Adapter<EstimateAdapter.ViewHo
 
         holder.tvCategoryAndRegion.setText(categoryName + " | " + districtName);
 
+        // 🔹 직접 견적 배지 표시
+        if (item.getExpertId() != null && item.getExpertId() > 0) {
+            holder.tvDirectBadge.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvDirectBadge.setVisibility(View.GONE);
+        }
+
         // 2️⃣ 카테고리 아이콘 (부분 문자열 매칭)
         holder.ivCategoryIcon.setImageResource(getIconResId(categoryName));
 
@@ -100,7 +107,7 @@ public class EstimateAdapter extends RecyclerView.Adapter<EstimateAdapter.ViewHo
 
     /** ViewHolder: item_estimate.xml에 맞춤 */
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvCategoryAndRegion, tvEstimateInfo, tvStatus;
+        TextView tvCategoryAndRegion, tvEstimateInfo, tvStatus ,tvDirectBadge;
         ImageView ivCategoryIcon;
 
         public ViewHolder(@NonNull View itemView) {
@@ -109,6 +116,8 @@ public class EstimateAdapter extends RecyclerView.Adapter<EstimateAdapter.ViewHo
             tvEstimateInfo = itemView.findViewById(R.id.tvEstimateInfo);
             tvStatus = itemView.findViewById(R.id.tvEstimateStatus);
             ivCategoryIcon = itemView.findViewById(R.id.ivCategoryIcon);
+            tvDirectBadge = itemView.findViewById(R.id.tvDirectBadge); // 🔹 추가
+
         }
     }
 }

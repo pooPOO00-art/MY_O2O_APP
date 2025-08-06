@@ -45,17 +45,19 @@ public class EstimateRequestViewModel extends ViewModel {
     }
 
     /**
-     * 최종 견적 요청 전송
+     * 최종 견적 요청 전송 (직접견적/역매칭 모두 처리)
      * @param userId 사용자 ID
      * @param categoryId 카테고리 ID
-     * @param districtId 선택한 시군구 ID (전국=83, 도전체=47~63)
+     * @param districtId 선택한 시군구 ID
+     * @param expertId 직접 견적 시 선택한 전문가 ID (없으면 null)
      */
-    public void submitEstimate(int userId, int categoryId, Integer districtId,
+    public void submitEstimate(int userId, int categoryId, Integer districtId, Integer expertId, // 🔹 수정
                                Runnable onSuccess, Runnable onError) {
 
+        // 🔹 expertId를 포함한 RequestBody 생성
         EstimateRequestBody body =
-                new EstimateRequestBody(userId, categoryId, districtId, selectedOptionIds);
+                new EstimateRequestBody(userId, categoryId, districtId, selectedOptionIds, expertId);
 
-        repository.submitEstimate(body, onSuccess, onError);
+        repository.submitEstimate(body, onSuccess, onError); // 🔹 수정
     }
 }

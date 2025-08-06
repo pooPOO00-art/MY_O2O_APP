@@ -57,6 +57,10 @@ public class EstimateRequestActivity extends AppCompatActivity {
         String categoryName = getIntent().getStringExtra("categoryName");
         Log.d("EstimateRequest", "categoryId=" + categoryId + ", name=" + categoryName);
 
+        int expertId = getIntent().getIntExtra("expertId", 0); // 🔹 추가: 직접 견적 여부 확인용
+        Log.d("EstimateRequest", "expertId=" + expertId);      // 🔹 추가
+
+
         // ✅ View 초기화
         tvCategoryName = findViewById(R.id.tvCategoryName);
         tvQuestion = findViewById(R.id.tvQuestion);
@@ -132,7 +136,7 @@ public class EstimateRequestActivity extends AppCompatActivity {
 
                 Log.d("EstimateRequest", "submit with districtId=" + selectedDistrictId);
 
-                viewModel.submitEstimate(userId, categoryId, selectedDistrictId,
+                viewModel.submitEstimate(userId, categoryId, selectedDistrictId,expertId,
                         () -> runOnUiThread(() -> {
                             Toast.makeText(this, "견적 요청 성공!", Toast.LENGTH_SHORT).show();
                             finish();

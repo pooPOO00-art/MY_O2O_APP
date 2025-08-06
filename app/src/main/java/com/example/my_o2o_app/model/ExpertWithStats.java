@@ -33,6 +33,9 @@ public class ExpertWithStats {
     @SerializedName("service_info")
     private String serviceInfo;
 
+    @SerializedName("category_id")   // 서버 JSON 키명과 맞춤
+    private int categoryId;
+
     // ✅ 기본 생성자
     public ExpertWithStats() {}
 
@@ -63,4 +66,7 @@ public class ExpertWithStats {
 
     public String getServiceInfo() { return serviceInfo; }
     public void setServiceInfo(String serviceInfo) { this.serviceInfo = serviceInfo; }
+
+    public int getCategoryId() { return categoryId; }
+    public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
 }

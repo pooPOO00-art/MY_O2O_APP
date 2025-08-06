@@ -35,6 +35,7 @@ import retrofit2.Response;
 public class ExpertProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "ExpertProfileActivity";
+    private ExpertWithStats expert;  // 🔹 멤버 변수로 선언
 
     private ImageView ivProfile;
     private TextView tvCompanyName, tvDescription, tvRegion, tvRating;
@@ -96,12 +97,18 @@ public class ExpertProfileActivity extends AppCompatActivity {
 
             Button btnRequest = layoutBottomFixed.findViewById(R.id.btnRequestEstimate);
             btnRequest.setOnClickListener(v -> {
+                if (expert == null) {
+                    Toast.makeText(this, "전문가 정보를 불러오는 중입니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Log.i(TAG, "견적 요청 클릭 (expertId=" + expertId + ")");
                 Intent intent = new Intent(this, EstimateRequestActivity.class);
-                intent.putExtra("categoryId", -1);
-                intent.putExtra("categoryName", tvCompanyName.getText().toString());
+                intent.putExtra("expertId", expertId);                  // 직접 견적 구분
+                intent.putExtra("categoryId", expert.getCategoryId());  // 질문 로딩용
+                intent.putExtra("categoryName", expert.getCompanyName());
                 startActivity(intent);
             });
+
 
         } else if ("estimate".equalsIgnoreCase(from)) {
             Log.i(TAG, "inflate → 채팅 버튼");
@@ -146,9 +153,10 @@ public class ExpertProfileActivity extends AppCompatActivity {
                 }
 
                 JsonObject obj = root.getAsJsonObject("expert");
-                ExpertWithStats expert = new ExpertWithStats();
 
-                // ✅ 안전한 파싱
+                // ✅ 멤버 변수 expert 초기화
+                expert = new ExpertWithStats();
+
                 expert.setExpertId(obj.has("expert_id") && !obj.get("expert_id").isJsonNull() ? obj.get("expert_id").getAsInt() : 0);
                 expert.setCompanyName(obj.has("company_name") && !obj.get("company_name").isJsonNull() ? obj.get("company_name").getAsString() : "");
                 expert.setProfileImage(obj.has("profile_image") && !obj.get("profile_image").isJsonNull() ? obj.get("profile_image").getAsString() : "");
@@ -158,7 +166,9 @@ public class ExpertProfileActivity extends AppCompatActivity {
                 expert.setCareerYears(obj.has("career_years") && !obj.get("career_years").isJsonNull() ? obj.get("career_years").getAsInt() : 0);
                 expert.setDescription(obj.has("description") && !obj.get("description").isJsonNull() ? obj.get("description").getAsString() : "설명 없음");
                 expert.setServiceInfo(obj.has("service_info") && !obj.get("service_info").isJsonNull() ? obj.get("service_info").getAsString() : "지역 정보 없음");
+                expert.setCategoryId(obj.has("category_id") && !obj.get("category_id").isJsonNull() ? obj.get("category_id").getAsInt() : 0);
 
+                // ✅ UI 갱신
                 updateUI(expert);
             }
 
@@ -170,6 +180,7 @@ public class ExpertProfileActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /** ExpertWithStats DTO → UI 반영 */
     private void updateUI(ExpertWithStats expert) {
