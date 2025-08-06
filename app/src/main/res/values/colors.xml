@@ -2,6 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="purple_500">#6200EE</color>
+    <color name="purple_500">#4557E9</color>
 
 </resources>
+<!--6200EEQ보라색
+    4557E9 파란색 일단 굿-->

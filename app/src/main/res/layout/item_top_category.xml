@@ -17,7 +17,7 @@
         android:id="@+id/ivTopCategoryIcon"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:background="@drawable/category_item_bg"
+        android:background="@drawable/category_item_selected_bg"
         android:scaleType="centerInside"
         android:padding="10dp"
         android:src="@drawable/ic_placeholder"

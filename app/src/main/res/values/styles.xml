@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ✅ BottomNavigationView 타원형 배경 제거용 -->
+    <style name="EmptyIndicatorStyle">
+        <item name="android:background">@null</item>
+    </style>
+</resources>

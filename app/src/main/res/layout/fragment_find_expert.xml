@@ -2,20 +2,44 @@
 <!-- res/layout/fragment_find_expert.xml -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FFFFFF">
 
-    <!-- 검색창 -->
-    <EditText
-        android:id="@+id/etExpertSearch"
+    <!-- 검색창 영역 -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="12dp"
+        android:layout_margin="12dp"
+        android:background="@drawable/search_bg">
+
+        <!-- 검색 아이콘 -->
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_search2"
+        app:tint="#888888"
+        android:layout_marginEnd="8dp" />
+
+        <!-- 검색 입력창 -->
+        <EditText
+            android:id="@+id/etExpertSearch"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@null"
         android:hint="업체명을 검색해보세요"
-        android:padding="12dp"
-        android:background="@android:drawable/edit_text"
-        android:layout_margin="12dp" />
+        android:inputType="text"
+        android:textSize="14sp"
+        android:padding="0dp"
+        android:textColor="#000000"
+        android:textColorHint="#888888"/>
+    </LinearLayout>
 
     <!-- 필터 버튼 영역 -->
     <LinearLayout
@@ -30,7 +54,9 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="서비스 전체" />
+            android:text="서비스 전체"
+            android:backgroundTint="@color/purple_500"
+            android:textColor="@android:color/white"/>
 
         <Space
             android:layout_width="8dp"
@@ -41,7 +67,9 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="지역" />
+            android:text="지역"
+            android:backgroundTint="@color/purple_500"
+            android:textColor="@android:color/white"/>
     </LinearLayout>
 
     <!-- 전문가 리스트 -->

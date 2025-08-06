@@ -1,9 +1,23 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
+    <!-- ✅ 앱 기본 테마 -->
     <style name="Base.Theme.MY_O2O_APP" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <!-- ✅ 상태바 색상 -->
+        <item name="android:statusBarColor">@color/purple_500</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- ✅ Material3 색상 팔레트 설정 -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+
+        <item name="colorSecondary">@color/purple_500</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+
+        <item name="colorPrimaryContainer">@color/purple_500</item>
+        <item name="colorOnPrimaryContainer">@android:color/white</item>
+
     </style>
 
-    <style name="Theme.MY_O2O_APP" parent="Base.Theme.MY_O2O_APP" />
+    <style name="Theme.MY_O2O_APP" parent="Base.Theme.MY_O2O_APP"/>
 </resources>

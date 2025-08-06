@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.graphics.Typeface;
+import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -101,15 +103,21 @@ public class TopCategoryAdapter extends RecyclerView.Adapter<TopCategoryAdapter.
             int iconResId = getIconResId(category.getCategory_name());
             imageView.setImageResource(iconResId);
 
-            // 선택 상태 강조
+            // 🔹 selector 방식으로 선택 상태만 적용
+            imageView.setSelected(isSelected);
+
+            // 🔹 아이콘 색상만 변경
             if (isSelected) {
-                imageView.setBackgroundResource(R.drawable.category_item_selected_bg);
-                textView.setTypeface(null, android.graphics.Typeface.BOLD);
+                imageView.setColorFilter(Color.WHITE); // 아이콘 흰색
             } else {
-                imageView.setBackgroundResource(R.drawable.category_item_bg);
-                textView.setTypeface(null, android.graphics.Typeface.NORMAL);
+                imageView.clearColorFilter(); // 원래 아이콘 색상
             }
+
+            // 🔹 글씨 굵기는 그대로 두고 필요하면 Bold만
+            textView.setTypeface(null, isSelected ? Typeface.BOLD : Typeface.NORMAL);
         }
+
+
 
         // 🔹 카테고리명에 따른 아이콘 매핑
         private int getIconResId(String categoryName) {
