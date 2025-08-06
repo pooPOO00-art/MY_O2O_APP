@@ -74,19 +74,11 @@ public class EstimateListFragment extends Fragment {
                     ", status=" + status +
                     ", expertId=" + expertId);
 
-            if (expertId == null || expertId <= 0) {
-                // 전문가 정보 없음 → 견적 상세 화면으로 이동
-                Intent intent = new Intent(getContext(), EstimateDetailActivity.class);
-                intent.putExtra("estimateId", estimate.getEstimateId());
-                startActivity(intent);
-            } else {
-                // 전문가 정보 있음 → 전문가 프로필 화면으로 이동
-                Intent intent = new Intent(getContext(), ExpertProfileActivity.class);
-                intent.putExtra("expertId", expertId);
-                intent.putExtra("from", "estimate"); // 받은견적 → 채팅 버튼
-                startActivity(intent);
+            // ✅ 모든 견적(일반/직접) 동일하게 상세 화면으로 이동
+            Intent intent = new Intent(getContext(), EstimateDetailActivity.class);
+            intent.putExtra("estimateId", estimate.getEstimateId());
+            startActivity(intent);
 
-            }
         });
         recyclerView.setAdapter(adapter);
 
