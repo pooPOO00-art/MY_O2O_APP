@@ -10,6 +10,9 @@ import com.example.my_o2o_app.view.user.fragment.FindExpertFragment;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import android.content.Intent;
+import com.example.my_o2o_app.view.chat.ChatActivity;
+
 
 
 import com.example.my_o2o_app.R;
@@ -53,7 +56,7 @@ public class UserHomeActivity extends AppCompatActivity {
                 loadFragment(new EstimateListFragment());
                 return true;
             } else if (id == R.id.nav_chat) {    // ✅ 채팅
-                loadFragment(new ChatListFragment()); // 나중에 구현
+                startActivity(new Intent(this, ChatActivity.class));
                 return true;
             } else if (id == R.id.nav_reservation) { // ✅ 예약
                 loadFragment(new ReservationListFragment()); // 나중에 구현
