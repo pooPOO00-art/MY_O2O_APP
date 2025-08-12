@@ -37,6 +37,9 @@ public class EstimateListFragment extends Fragment {
 
     private static final String TAG = "EstimateListFragment";
 
+
+    private int userId; // 로그인한 사용자 ID
+
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private EstimateAdapter adapter;
@@ -77,6 +80,8 @@ public class EstimateListFragment extends Fragment {
             // ✅ 모든 견적(일반/직접) 동일하게 상세 화면으로 이동
             Intent intent = new Intent(getContext(), EstimateDetailActivity.class);
             intent.putExtra("estimateId", estimate.getEstimateId());
+            intent.putExtra("userId", userId); // ✅ 반드시 추가
+
             startActivity(intent);
 
         });
@@ -87,15 +92,30 @@ public class EstimateListFragment extends Fragment {
         tvFilterResponding.setOnClickListener(v -> filterByStatus("응답중"));
         tvFilterExpired.setOnClickListener(v -> filterByStatus("만료"));
 
+
+
+        if (getArguments() != null) {
+            userId = getArguments().getInt("userId", -1);
+        }
+
         // ViewModel 초기화
         viewModel = new ViewModelProvider(this).get(com.example.my_o2o_app.viewmodel.EstimateViewModel.class);
         observeViewModel();
 
         // 예시: 사용자 ID 1번으로 견적 목록 로드
-        viewModel.loadEstimates(1);
+        viewModel.loadEstimates(userId);
 
         return view;
     }
+
+    public static EstimateListFragment newInstance(int userId) {
+        EstimateListFragment fragment = new EstimateListFragment();
+        Bundle args = new Bundle();
+        args.putInt("userId", userId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     /** LiveData 관찰 → RecyclerView 갱신 */
     /** LiveData 관찰 → RecyclerView 갱신 */

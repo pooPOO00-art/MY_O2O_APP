@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
+
+
 
     <!-- 상단 영역: 배경 이미지 -->
     <com.google.android.material.appbar.AppBarLayout
@@ -39,6 +43,8 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_marginTop="30dp">
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,6 +52,8 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingTop="16dp">
+
+
 
             <!-- 업체명 -->
             <TextView
@@ -83,17 +91,11 @@
                 android:weightSum="3"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="12dp"
-                android:layout_marginHorizontal="0dp"
                 android:background="@drawable/bg_stat_card"
-            android:padding="16dp"
-            android:clipToPadding="false"
-            android:clipChildren="false"
+                android:padding="16dp"
+                android:gravity="center">
 
-            android:layout_gravity="center"
-            android:gravity="center">
-
-
-            <!-- 고용 -->
+                <!-- 고용 -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -170,7 +172,11 @@
             </LinearLayout>
 
         </LinearLayout>
+
+
     </androidx.core.widget.NestedScrollView>
+
+
 
     <!-- ✅ 하단 고정 버튼 영역 -->
     <FrameLayout
@@ -182,5 +188,14 @@
         android:elevation="16dp"
         android:translationZ="16dp"
         android:padding="12dp" />
+
+    <!-- ✅ 채팅 프래그먼트가 올라올 공간 (맨 마지막에 위치해야 함) -->
+    <FrameLayout
+        android:id="@+id/fragmentContainerExpert"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="30dp"
+        android:visibility="gone"/>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
