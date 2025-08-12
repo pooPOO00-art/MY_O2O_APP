@@ -9,6 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.View; // ✅ 이 줄이 필요합니다!
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,8 +21,8 @@ import com.example.my_o2o_app.model.ExpertWithStats;
 import com.example.my_o2o_app.network.ApiClient;
 import com.example.my_o2o_app.network.ApiService;
 import com.example.my_o2o_app.view.estimate.EstimateRequestActivity;
-import com.example.my_o2o_app.view.chat.ChatActivity;
 import com.google.gson.JsonObject;
+import com.example.my_o2o_app.view.chat.ChatFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -112,22 +114,70 @@ public class ExpertProfileActivity extends AppCompatActivity {
 
         } else if ("estimate".equalsIgnoreCase(from)) {
             Log.i(TAG, "inflate → 채팅 버튼");
-            System.out.println("### 채팅 버튼 inflate 시작 ###");
-
             inflater.inflate(R.layout.layout_bottom_chat, layoutBottomFixed, true);
 
             Button btnChat = layoutBottomFixed.findViewById(R.id.btnChatExpert);
             btnChat.setOnClickListener(v -> {
-                System.out.println("### 채팅 버튼 클릭됨 ###");
-                Log.i(TAG, "채팅하기 클릭 (expertId=" + expertId + ")");
-                Intent intent = new Intent(this, ChatActivity.class);
-                intent.putExtra("expertId", expertId);
-                startActivity(intent);
+                if (expert == null) {
+                    Toast.makeText(this, "전문가 정보를 불러오는 중입니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                int myUserId = getIntent().getIntExtra("userId", -1); // ✅ 로그인한 사용자 ID 전달
+                if (myUserId == -1) {
+                    Toast.makeText(this, "로그인 정보가 없습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+                JsonObject body = new JsonObject();
+                body.addProperty("user_id", myUserId);
+                body.addProperty("expert_id", expertId);
+
+                apiService.createChatRoom(body).enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            JsonObject json = response.body();
+                            if (json.get("success").getAsBoolean()) {
+                                int roomId = json.get("room_id").getAsInt();
+                                Log.i(TAG, "채팅방 생성/조회 성공, roomId=" + roomId);
+
+                                ChatFragment chatFragment = ChatFragment.newInstance(
+                                        roomId,
+                                        expert.getCompanyName(),
+                                        myUserId
+                                );
+
+                                // ✅ 프래그먼트 표시 영역 보이도록 설정
+                                findViewById(R.id.fragmentContainerExpert).setVisibility(View.VISIBLE);
+
+                                getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.fragmentContainerExpert, chatFragment)
+                                        .addToBackStack(null)
+                                        .commit();
+                            } else {
+                                Toast.makeText(ExpertProfileActivity.this, "채팅방 생성 실패", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Toast.makeText(ExpertProfileActivity.this, "네트워크 오류", Toast.LENGTH_SHORT).show();
+                    }
+                });
             });
+
+
+
 
         } else {
             Log.w(TAG, "from 값 불명 → 버튼 미표시");
         }
+
     }
 
     /** DB에서 전문가 프로필 조회 (Retrofit + JsonObject → DTO 변환) */

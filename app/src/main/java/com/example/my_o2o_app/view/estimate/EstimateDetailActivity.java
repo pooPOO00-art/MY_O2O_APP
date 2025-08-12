@@ -1,8 +1,3 @@
-// EstimateDetailActivity.java
-// 특정 견적 요청에 대한 전문가 제안 리스트 화면
-// - RecyclerView로 전문가 견적 표시
-// - 전문가 카드 클릭 시 ExpertProfileActivity로 이동
-
 package com.example.my_o2o_app.view.estimate;
 
 import android.content.Intent;
@@ -13,7 +8,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +35,7 @@ public class EstimateDetailActivity extends AppCompatActivity {
     private TextView tvEstimateTitle;
 
     private int estimateId;
+    private int userId; // ✅ 로그인한 사용자 ID 추가
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,28 +44,32 @@ public class EstimateDetailActivity extends AppCompatActivity {
 
         // 1️⃣ View 초기화
         recyclerView = findViewById(R.id.recyclerViewExpertEstimates);
-        progressBar = findViewById(R.id.progressBar); // xml에 추가됨
-        tvEstimateTitle = findViewById(R.id.tvEstimateTitle); // xml에 추가됨
+        progressBar = findViewById(R.id.progressBar);
+        tvEstimateTitle = findViewById(R.id.tvEstimateTitle);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // 2️⃣ 어댑터 설정
+        // 2️⃣ 로그인한 사용자 ID 및 estimateId 수신
+        estimateId = getIntent().getIntExtra("estimateId", -1);
+        userId = getIntent().getIntExtra("userId", -1); // ✅ userId 받기
+
+        // 3️⃣ 어댑터 설정
         adapter = new ExpertEstimateAdapter(new ArrayList<>(), expert -> {
             Log.d(TAG, "전문가 클릭: expertId=" + expert.getExpertId());
 
             // 전문가 상세 화면으로 이동
             Intent intent = new Intent(this, ExpertProfileActivity.class);
             intent.putExtra("expertId", expert.getExpertId());
-            intent.putExtra("from", "estimate"); // ★ 받은견적에서 진입이므로 채팅 버튼 표시
+            intent.putExtra("from", "estimate");
+            intent.putExtra("userId", userId); // ✅ 로그인한 사용자 ID도 전달
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
 
-        // 3️⃣ ViewModel 초기화
+        // 4️⃣ ViewModel 초기화
         viewModel = new ViewModelProvider(this).get(ExpertEstimateViewModel.class);
 
-        // 4️⃣ estimateId 수신
-        estimateId = getIntent().getIntExtra("estimateId", -1);
+        // 5️⃣ 견적 ID 유효성 확인
         if (estimateId != -1) {
             Log.d(TAG, "받은 estimateId=" + estimateId);
             progressBar.setVisibility(View.VISIBLE);
@@ -85,7 +84,7 @@ public class EstimateDetailActivity extends AppCompatActivity {
     /** LiveData 관찰하여 UI 갱신 */
     private void observeViewModel() {
         viewModel.getExpertEstimates().observe(this, estimates -> {
-            progressBar.setVisibility(View.GONE); // 로딩 완료 시 숨김
+            progressBar.setVisibility(View.GONE);
             if (estimates == null || estimates.isEmpty()) {
                 Toast.makeText(this, "받은 견적이 없습니다.", Toast.LENGTH_SHORT).show();
                 adapter.updateData(new ArrayList<>());
@@ -96,4 +95,3 @@ public class EstimateDetailActivity extends AppCompatActivity {
         });
     }
 }
-
