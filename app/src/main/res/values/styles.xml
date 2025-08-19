@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 파일 기능: 앱 공통 스타일/테마 정의
+     - Theme.MY_O2O_APP.NoActionBar: ChatRoomActivity 전용(액션바 제거)
+     - EmptyIndicatorStyle: BottomNavigationView의 활성 인디케이터 숨김 -->
 <resources>
-    <!-- ✅ BottomNavigationView 타원형 배경 제거용 -->
-    <style name="EmptyIndicatorStyle">
-        <item name="android:background">@null</item>
+
+    <!-- ✅ 채팅 액티비티 전용 NoActionBar 테마 (앱 기본 테마 상속) -->
+    <style name="Theme.MY_O2O_APP.NoActionBar" parent="Theme.MY_O2O_APP">
+        <!-- 액션바/타이틀 제거: 레이아웃의 MaterialToolbar만 쓰기 위함 -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
+
+    <!-- ✅ BottomNavigationView 활성 인디케이터 숨김 스타일 -->
+    <!-- 주의: 머티리얼 버전에 따라 parent 이름이 다를 수 있음.
+         1) 먼저 아래 Material3 부모로 시도:
+            Widget.Material3.NavigationBarView.ActiveIndicator
+         2) 만약 'Cannot resolve symbol' 나면 이걸로 바꿔서 시도:
+            Widget.MaterialComponents.NavigationBar.ActiveIndicator
+    -->
+
 </resources>

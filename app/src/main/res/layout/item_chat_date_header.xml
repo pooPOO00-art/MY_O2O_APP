@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 파일 기능: 날짜 헤더 (드로어블 없이 카드로 칩 표현) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
+
+    <!-- 배경 칩을 MaterialCardView로 대체 -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="12dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#E5E5E5"
+        app:cardBackgroundColor="#F2F2F2"
+        app:cardUseCompatPadding="false">
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="2025년 8월 12일 화요일"
+            android:textSize="12sp"
+            android:textColor="#666666"/>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

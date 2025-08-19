@@ -26,6 +26,16 @@
             android:name=".view.user.UserLoginActivity"
             android:exported="false" /> <!-- ✅ 앱 진입점 (런처) -->
 
+        <!-- AndroidManifest.xml (정리본 일부) -->
+        <!-- AndroidManifest.xml -->
+        <!-- 파일 기능: 액티비티 테마를 NoActionBar로 지정해 툴바 중복을 방지 -->
+        <activity
+            android:name=".view.chat.ChatRoomActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MY_O2O_APP.NoActionBar"
+        android:windowSoftInputMode="adjustResize" />
+
+
 
 
         <activity android:name=".view.user.CategoryDetailActivity" />
@@ -36,7 +46,9 @@
 
         <activity android:name=".view.estimate.EstimateDetailActivity" />
         <activity android:name=".view.expert.ExpertProfileActivity" />
-        <activity android:name=".view.chat.ChatRoomActivity"/>
+
+
+
         <activity
             android:name=".view.MainActivity"
             android:exported="true">

@@ -90,7 +90,6 @@
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"
         app:itemRippleColor="@null"
-        app:itemActiveIndicatorStyle="@style/EmptyIndicatorStyle"
         app:itemIconSize="24dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

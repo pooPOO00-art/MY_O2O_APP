@@ -17,6 +17,9 @@
         <item name="colorPrimaryContainer">@color/purple_500</item>
         <item name="colorOnPrimaryContainer">@android:color/white</item>
 
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
     </style>
 
     <style name="Theme.MY_O2O_APP" parent="Base.Theme.MY_O2O_APP"/>

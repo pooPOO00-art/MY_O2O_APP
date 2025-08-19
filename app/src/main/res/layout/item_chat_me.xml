@@ -1,16 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 파일 기능: 내가 보낸 말풍선 + 시간 (드로어블 없이 카드 배경) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="end"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:gravity="end">
 
-    <TextView
-        android:id="@+id/tvMessage"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_chat_me"
-        android:padding="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <!-- 말풍선 배경을 MaterialCardView로 -->
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="2dp"
+            android:text="오후 3:12"
+            android:textColor="#999999"
+            android:textSize="10sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@color/purple_500"> <!-- 없으면 #512DA8 로 바꿔도 됨 -->
+
+            <TextView
+                android:id="@+id/tvMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxWidth="260dp"
+                android:padding="12dp"
+                android:textColor="#FFFFFF" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
 </LinearLayout>

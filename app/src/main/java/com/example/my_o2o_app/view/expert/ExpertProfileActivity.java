@@ -1,16 +1,27 @@
 package com.example.my_o2o_app.view.expert;
 
+/**
+ * 파일 설명: 전문가(고수) 상세 프로필 화면
+ * - '고수찾기'에서 들어온 경우: 하단 고정 버튼 = "견적 요청"
+ * - '받은견적'에서 들어온 경우: 하단 고정 버튼 = "채팅하기"
+ * - '채팅하기' 클릭 시: 프래그먼트를 붙이지 않고 전용 채팅 액티비티(ChatRoomActivity)로 이동
+ *
+ * 개발자 메모(중요):
+ * - 과거 겹침 이슈 원인: fragmentContainerExpert에 ChatFragment를 add/replace 하던 코드
+ * - 본 수정본에서는 해당 코드 전부 제거. 화면 전환은 Intent 로만 처리
+ * - UI 텍스트 결합은 추후 strings.xml로 옮기는 것을 권장(TODO 주석)
+ */
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.View; // ✅ 이 줄이 필요합니다!
-
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,48 +32,42 @@ import com.example.my_o2o_app.model.ExpertWithStats;
 import com.example.my_o2o_app.network.ApiClient;
 import com.example.my_o2o_app.network.ApiService;
 import com.example.my_o2o_app.view.estimate.EstimateRequestActivity;
+import com.example.my_o2o_app.view.chat.ChatRoomActivity;
 import com.google.gson.JsonObject;
-import com.example.my_o2o_app.view.chat.ChatFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * ExpertProfileActivity
- * - 전문가(고수) 상세 프로필 화면
- * - 고수찾기/받은견적에 따라 하단 버튼 변경
- * - 업체 정보는 스크롤 가능, 버튼은 하단 고정
- */
 public class ExpertProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "ExpertProfileActivity";
-    private ExpertWithStats expert;  // 🔹 멤버 변수로 선언
 
+    // 데이터
+    private ExpertWithStats expert;
+    private int expertId;
+    private int userId;     // 받은견적 → 프로필로 들어올 때 전달됨
+    private String from;    // "find_expert" or "estimate"
+
+    // 뷰
     private ImageView ivProfile;
-    private TextView tvCompanyName, tvDescription, tvRegion, tvRating;
+    private TextView tvCompanyName, tvDescription, tvRegion;
     private TextView tvHireCount, tvRatingStat, tvCareerStat;
     private FrameLayout layoutBottomFixed;
-
-    private int expertId;
-    private String from; // "find_expert" or "estimate"
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expert_profile);
 
-        System.out.println("### ExpertProfileActivity onCreate 실행됨 ###");
-
-        // 1️⃣ Intent 데이터 수신
+        // 1) 인텐트 파라미터 수신
         expertId = getIntent().getIntExtra("expertId", -1);
-        from = getIntent().getStringExtra("from");
+        userId   = getIntent().getIntExtra("userId", -1);   // '받은견적' 화면에서 넘겨줌
+        from     = getIntent().getStringExtra("from");
 
-        Log.i(TAG, "=== onCreate 실행됨 ===");
-        Log.i(TAG, "expertId=" + expertId + ", from='" + from + "'");
+        Log.i(TAG, "onCreate: expertId=" + expertId + ", userId=" + userId + ", from=" + from);
 
-
-        if (expertId == -1) {
+        if (expertId <= 0) {
             Toast.makeText(this, "전문가 정보가 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -73,28 +78,27 @@ public class ExpertProfileActivity extends AppCompatActivity {
         loadExpertProfileFromServer();
     }
 
-    /** View 초기화 */
+    /** 기능: findViewById 및 기본 상태 설정 */
     private void initView() {
-        ivProfile = findViewById(R.id.ivProfile);
-        tvCompanyName = findViewById(R.id.tvCompanyName);
-        tvDescription = findViewById(R.id.tvDescription);
-        tvRegion = findViewById(R.id.tvRegion);
-
-
-        tvHireCount = findViewById(R.id.tvHireCount);
-        tvRatingStat = findViewById(R.id.tvRatingStat);
-        tvCareerStat = findViewById(R.id.tvCareerStat);
-
+        ivProfile      = findViewById(R.id.ivProfile);
+        tvCompanyName  = findViewById(R.id.tvCompanyName);
+        tvDescription  = findViewById(R.id.tvDescription);
+        tvRegion       = findViewById(R.id.tvRegion);
+        tvHireCount    = findViewById(R.id.tvHireCount);
+        tvRatingStat   = findViewById(R.id.tvRatingStat);
+        tvCareerStat   = findViewById(R.id.tvCareerStat);
         layoutBottomFixed = findViewById(R.id.layoutBottomFixed);
+
+        // 과거 오버레이 컨테이너는 사용하지 않음(겹침 원인). XML에 있더라도 항상 숨김.
+        View overlay = findViewById(R.id.fragmentContainerExpert);
+        if (overlay != null) overlay.setVisibility(View.GONE);
     }
 
-    /** 하단 버튼 동적 로드 */
+    /** 기능: 하단 고정 버튼 영역을 상황에 맞게 inflate & 클릭 핸들러 연결 */
     private void setupBottomButtons() {
         LayoutInflater inflater = LayoutInflater.from(this);
-        Log.i(TAG, "setupBottomButtons() 호출됨, from='" + from + "'");
 
         if ("find_expert".equalsIgnoreCase(from)) {
-            Log.i(TAG, "inflate → 견적 요청 버튼");
             inflater.inflate(R.layout.layout_bottom_request, layoutBottomFixed, true);
 
             Button btnRequest = layoutBottomFixed.findViewById(R.id.btnRequestEstimate);
@@ -103,17 +107,14 @@ public class ExpertProfileActivity extends AppCompatActivity {
                     Toast.makeText(this, "전문가 정보를 불러오는 중입니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Log.i(TAG, "견적 요청 클릭 (expertId=" + expertId + ")");
                 Intent intent = new Intent(this, EstimateRequestActivity.class);
-                intent.putExtra("expertId", expertId);                  // 직접 견적 구분
-                intent.putExtra("categoryId", expert.getCategoryId());  // 질문 로딩용
+                intent.putExtra("expertId", expertId);                 // 직접 견적
+                intent.putExtra("categoryId", expert.getCategoryId()); // 질문 로딩용
                 intent.putExtra("categoryName", expert.getCompanyName());
                 startActivity(intent);
             });
 
-
         } else if ("estimate".equalsIgnoreCase(from)) {
-            Log.i(TAG, "inflate → 채팅 버튼");
             inflater.inflate(R.layout.layout_bottom_chat, layoutBottomFixed, true);
 
             Button btnChat = layoutBottomFixed.findViewById(R.id.btnChatExpert);
@@ -122,130 +123,109 @@ public class ExpertProfileActivity extends AppCompatActivity {
                     Toast.makeText(this, "전문가 정보를 불러오는 중입니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                int myUserId = getIntent().getIntExtra("userId", -1); // ✅ 로그인한 사용자 ID 전달
-                if (myUserId == -1) {
+                if (userId <= 0) {
                     Toast.makeText(this, "로그인 정보가 없습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                ApiService apiService = ApiClient.getClient().create(ApiService.class);
-
-                JsonObject body = new JsonObject();
-                body.addProperty("user_id", myUserId);
-                body.addProperty("expert_id", expertId);
-
-                apiService.createChatRoom(body).enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            JsonObject json = response.body();
-                            if (json.get("success").getAsBoolean()) {
-                                int roomId = json.get("room_id").getAsInt();
-                                Log.i(TAG, "채팅방 생성/조회 성공, roomId=" + roomId);
-
-                                ChatFragment chatFragment = ChatFragment.newInstance(
-                                        roomId,
-                                        expert.getCompanyName(),
-                                        myUserId
-                                );
-
-                                // ✅ 프래그먼트 표시 영역 보이도록 설정
-                                findViewById(R.id.fragmentContainerExpert).setVisibility(View.VISIBLE);
-
-                                getSupportFragmentManager()
-                                        .beginTransaction()
-                                        .replace(R.id.fragmentContainerExpert, chatFragment)
-                                        .addToBackStack(null)
-                                        .commit();
-                            } else {
-                                Toast.makeText(ExpertProfileActivity.this, "채팅방 생성 실패", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
-                        Toast.makeText(ExpertProfileActivity.this, "네트워크 오류", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                openChatRoom(userId, expertId, expert.getCompanyName());
             });
 
-
-
-
         } else {
-            Log.w(TAG, "from 값 불명 → 버튼 미표시");
+            Log.w(TAG, "from 값이 없어 하단 버튼을 표시하지 않습니다.");
         }
-
     }
 
-    /** DB에서 전문가 프로필 조회 (Retrofit + JsonObject → DTO 변환) */
-    private void loadExpertProfileFromServer() {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+    /**
+     * 기능: 채팅방 생성/조회 후 ChatRoomActivity로 화면 '이동'
+     * - 이 메서드에서는 절대 프래그먼트 트랜잭션(add/replace)을 하지 않음(겹침 방지)
+     */
+    private void openChatRoom(int myUserId, int targetExpertId, String expertName) {
+        ApiService api = ApiClient.getClient().create(ApiService.class);
 
-        apiService.getExpertProfile(expertId).enqueue(new Callback<JsonObject>() {
+        JsonObject body = new JsonObject();
+        body.addProperty("user_id", myUserId);
+        body.addProperty("expert_id", targetExpertId);
+
+        api.createChatRoom(body).enqueue(new Callback<>() { // 다이아몬드 연산자 사용
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> resp) {
+                if (!resp.isSuccessful() || resp.body() == null || !resp.body().get("success").getAsBoolean()) {
+                    Toast.makeText(ExpertProfileActivity.this, "채팅방 생성 실패", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                int roomId = resp.body().get("room_id").getAsInt();
+
+                Intent i = new Intent(ExpertProfileActivity.this, ChatRoomActivity.class);
+                i.putExtra("roomId", roomId);
+                i.putExtra("userId", myUserId);
+                i.putExtra("expertName", expertName);
+                i.putExtra("expertProfile", expert.getProfileImage());  // ✅ 추가
+                startActivity(i); // ✅ 전용 액티비티로 이동 (겹침 없음)
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(ExpertProfileActivity.this, "네트워크 오류로 채팅 시작 실패", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /** 기능: 서버에서 전문가 프로필 조회 */
+    private void loadExpertProfileFromServer() {
+        ApiService api = ApiClient.getClient().create(ApiService.class);
+
+        api.getExpertProfile(expertId).enqueue(new Callback<>() { // 다이아몬드 연산자
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (!response.isSuccessful() || response.body() == null) {
-                    Log.e(TAG, "응답 실패 또는 body=null");
-                    Toast.makeText(ExpertProfileActivity.this,
-                            "전문가 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ExpertProfileActivity.this, "전문가 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 JsonObject root = response.body();
                 if (!root.has("expert") || root.get("expert").isJsonNull()) {
-                    Log.e(TAG, "expert key 없음 또는 null");
-                    Toast.makeText(ExpertProfileActivity.this,
-                            "전문가 데이터가 비어있습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ExpertProfileActivity.this, "전문가 데이터가 비어있습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 JsonObject obj = root.getAsJsonObject("expert");
 
-                // ✅ 멤버 변수 expert 초기화
                 expert = new ExpertWithStats();
-
-                expert.setExpertId(obj.has("expert_id") && !obj.get("expert_id").isJsonNull() ? obj.get("expert_id").getAsInt() : 0);
-                expert.setCompanyName(obj.has("company_name") && !obj.get("company_name").isJsonNull() ? obj.get("company_name").getAsString() : "");
-                expert.setProfileImage(obj.has("profile_image") && !obj.get("profile_image").isJsonNull() ? obj.get("profile_image").getAsString() : "");
-                expert.setAvgRating(obj.has("avg_rating") && !obj.get("avg_rating").isJsonNull() ? obj.get("avg_rating").getAsDouble() : 0.0);
-                expert.setReviewCount(obj.has("review_count") && !obj.get("review_count").isJsonNull() ? obj.get("review_count").getAsInt() : 0);
+                expert.setExpertId(obj.has("expert_id")      && !obj.get("expert_id").isJsonNull()      ? obj.get("expert_id").getAsInt()          : 0);
+                expert.setCompanyName(obj.has("company_name") && !obj.get("company_name").isJsonNull()   ? obj.get("company_name").getAsString()    : "");
+                expert.setProfileImage(obj.has("profile_image") && !obj.get("profile_image").isJsonNull()? obj.get("profile_image").getAsString()   : "");
+                expert.setAvgRating(obj.has("avg_rating")     && !obj.get("avg_rating").isJsonNull()     ? obj.get("avg_rating").getAsDouble()      : 0.0);
+                expert.setReviewCount(obj.has("review_count") && !obj.get("review_count").isJsonNull()   ? obj.get("review_count").getAsInt()       : 0);
                 expert.setReservationCount(obj.has("reservation_count") && !obj.get("reservation_count").isJsonNull() ? obj.get("reservation_count").getAsInt() : 0);
-                expert.setCareerYears(obj.has("career_years") && !obj.get("career_years").isJsonNull() ? obj.get("career_years").getAsInt() : 0);
-                expert.setDescription(obj.has("description") && !obj.get("description").isJsonNull() ? obj.get("description").getAsString() : "설명 없음");
-                expert.setServiceInfo(obj.has("service_info") && !obj.get("service_info").isJsonNull() ? obj.get("service_info").getAsString() : "지역 정보 없음");
-                expert.setCategoryId(obj.has("category_id") && !obj.get("category_id").isJsonNull() ? obj.get("category_id").getAsInt() : 0);
+                expert.setCareerYears(obj.has("career_years") && !obj.get("career_years").isJsonNull()   ? obj.get("career_years").getAsInt()       : 0);
+                expert.setDescription(obj.has("description")  && !obj.get("description").isJsonNull()    ? obj.get("description").getAsString()     : "설명 없음");
+                expert.setServiceInfo(obj.has("service_info") && !obj.get("service_info").isJsonNull()   ? obj.get("service_info").getAsString()    : "지역 정보 없음");
+                expert.setCategoryId(obj.has("category_id")   && !obj.get("category_id").isJsonNull()    ? obj.get("category_id").getAsInt()        : 0);
 
-                // ✅ UI 갱신
                 updateUI(expert);
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.e(TAG, "Retrofit 실패: " + t.getMessage());
-                Toast.makeText(ExpertProfileActivity.this,
-                        "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
+                Toast.makeText(ExpertProfileActivity.this, "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    /** 기능: DTO → 화면 반영 */
+    private void updateUI(ExpertWithStats e) {
+        // TODO: 문자열 결합은 strings.xml의 포맷 문자열을 사용하는 것이 권장됨(경고 제거 목적)
+        tvCompanyName.setText(e.getCompanyName());
+        tvDescription.setText(e.getDescription());
+        tvRegion.setText(e.getServiceInfo());
+        tvHireCount.setText(e.getReservationCount() + "회");
+        tvRatingStat.setText("⭐ " + e.getAvgRating() + " (" + e.getReviewCount() + ")");
+        tvCareerStat.setText(e.getCareerYears() + "년");
 
-    /** ExpertWithStats DTO → UI 반영 */
-    private void updateUI(ExpertWithStats expert) {
-        tvCompanyName.setText(expert.getCompanyName());
-        tvDescription.setText(expert.getDescription());
-        tvRegion.setText(expert.getServiceInfo());
-
-
-        tvHireCount.setText(expert.getReservationCount() + "회");
-        tvRatingStat.setText("⭐ " + expert.getAvgRating() + " (" + expert.getReviewCount() + ")");
-        tvCareerStat.setText(expert.getCareerYears() + "년");
-
-        if (!expert.getProfileImage().isEmpty()) {
+        if (!e.getProfileImage().isEmpty()) {
             Glide.with(this)
-                    .load(expert.getProfileImage())
+                    .load(e.getProfileImage())
                     .placeholder(R.drawable.ic_placeholder)
                     .circleCrop()
                     .into(ivProfile);
